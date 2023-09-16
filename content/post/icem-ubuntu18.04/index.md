@@ -1,6 +1,6 @@
 ---
 title: ICEMCFD 18.0/19.0 start problem in UBUNTU 18.04
-date: 2018/09/26
+date: 2018-09-26
 permalink: /posts/2018/09/iceminubuntu1804/
 categories:
   - CFD

@@ -1,7 +1,7 @@
 ---
 title: 我的Linux
 description: 介绍下我的Linux开发环境搭建
-date: 2023/09/16
+date: 2023-09-16
 image: linux.jpg
 categories:
   - Linux
