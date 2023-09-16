@@ -22,7 +22,7 @@ local = true
 src = "img/avatar.png"
 
 [article]
-math = false
+math = true
 readingTime = true
 
 [article.license]
@@ -76,7 +76,7 @@ enabled = true
 ## Comments
 [comments]
 enabled = true
-provider = "disqus"
+provider = "gitalk"
 
 [comments.disqusjs]
 shortname = ""
@@ -138,11 +138,11 @@ reactionsEnabled = 1
 emitMetadata = 0
 
 [comments.gitalk]
-owner = ""
-admin = ""
-repo = ""
-clientID = ""
-clientSecret = ""
+owner = "TimoLin"
+admin = "TimoLin"
+repo = "TimoLin.github.io"
+clientID = "41910e63b60926623f76"
+clientSecret = "9d1cf54d499633a2bd8d54a29bf09d76b430bd8b"
 
 [comments.cusdis]
 host = ""
