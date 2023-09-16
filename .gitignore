@@ -1,2 +1,5 @@
 public
 resources
+
+# Editor backups
+*.swp
