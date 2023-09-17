@@ -3,7 +3,7 @@ title: About me
 description: Welcome to my blog
 slug: About-me
 date: 2023-09-16 00:00:00+0000
-image: cover.jpg
+image: cover.png
 weight: 1       # You can add weight to some posts to override the default sorting (date descending)
 ---
 ### Hi there 👋
@@ -27,4 +27,4 @@ weight: 1       # You can add weight to some posts to override the default sorti
 <!-- Proudly created with GPRM ( https://gprm.itsvg.in ) -->
 
 > Check the documentation: https://stack.jimmycai.com/ Want a site like this?. Check out [hugo-theme-stack-stater](https://github.com/CaiJimmy/hugo-theme-stack-starter)
-
+> The image copyright belongs to [Cerfacs](https://www.cerfacs.fr/avbp7x/).
