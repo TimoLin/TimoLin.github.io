@@ -13,7 +13,7 @@ tags:
 weight: 1
 ---
 
-## 1. 更换国内源 & 更新
+## 更换国内源 & 更新
 [中科大软件源](https://mirrors.ustc.edu.cn/help/ubuntu.html)
 
 ```sh
@@ -21,7 +21,7 @@ sudo sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 sudo apt update
 sudo apt dist-upgrade
 ```
-## 2. 安装软件
+## 安装软件
 ```sh
 # 更换为zsh终端
 sudo apt install zsh autojump 
@@ -31,8 +31,8 @@ sudo apt install build-essential
 sudo apt install proxychains
 ```
 
-## 3. 配置
-### 3.1 配置Zsh: [oh-my-zsh](https://ohmyz.sh/#install)
+## 配置
+### 配置Zsh: [oh-my-zsh](https://ohmyz.sh/#install)
 将默认bash更换为zsh:
 ```sh
 chsh -s /bin/zsh
@@ -41,7 +41,7 @@ chsh -s /bin/zsh
 ```sh
 sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
 ```
-### 3.2 配置代理: proxychains
+### 配置代理: proxychains
 `Proxychains`可以使任何程序通过代理上网，给终端环境下的命令带来了很多便利。
 修改`/etc/proxychains.conf`末尾行：
 ```sh
@@ -60,7 +60,7 @@ sudo proxychains apt update
 sudo proxychains apt distupgrade
 ```
 
-### 3.3 VIM配置
+### VIM配置
 
 更换最新的Vim发行仓库并更新Vim
 ```sh
@@ -69,12 +69,12 @@ sudo apt update
 sudo apt install vim
 ```
 
-#### 3.3.1 VIM-Plug插件管理器
+#### VIM-Plug插件管理器
 ```sh
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 ```
-#### 3.3.2 [coc.nvim](https://github.com/neoclide/coc.nvim)
+#### [coc.nvim](https://github.com/neoclide/coc.nvim)
 (1) 安装coc依赖
 ```sh
 # C/C++ lsp 
@@ -82,8 +82,10 @@ sudo snap install ccls
 sudo apt install bear 
 # Fortran lsp
 pip3 install fortran-language-server 
-# VIM coc-plugins
-# :CocInstall coc-pyright
+```
+插件安装，在vim命令模式下输入：
+```
+:CocInstall coc-pyright
 ```
 (2) C/C++程序生成 `compile_commands.json`
 1.  对采用`cmake`编译的程序，例如 `FlameMaster`
