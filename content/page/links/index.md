@@ -5,6 +5,15 @@ links:
     description: GitHub is the world's largest software development platform.
     website: https://github.com
     image: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+  - title: OpenFOAM Foundation
+    description: OpenFOAM is the leading free, open source software for computational fluid dynamics (CFD).
+    website: https://openfoam.org/
+    image: https://cdn.openfoam.org/wp-content/uploads/2016/05/CFDfoundationLogoDark-600x600.png
+  - title: OpenFOAM wiki
+    description: GitHub is the world's largest software development platform.
+    website: https://openfoamwiki.net/index.php/Main_Page
+    image: https://openfoamwiki.net/openfoamwiki.png
+
 menu:
     main: 
         weight: 4
@@ -13,21 +22,3 @@ menu:
 
 comments: false
 ---
-
-To use this feature, add `links` section to frontmatter.
-
-This page's frontmatter:
-
-```yaml
-links:
-  - title: GitHub
-    description: GitHub is the world's largest software development platform.
-    website: https://github.com
-    image: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-  - title: TypeScript
-    description: TypeScript is a typed superset of JavaScript that compiles to plain JavaScript.
-    website: https://www.typescriptlang.org
-    image: ts-logo-128.jpg
-```
-
-`image` field accepts both local and external images.
