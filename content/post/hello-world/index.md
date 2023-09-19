@@ -4,7 +4,7 @@ description: Welcome to my blog
 slug: About-me
 date: 2023-09-16 00:00:00+0000
 image: cover.png
-weight: 100       # You can add weight to some posts to override the default sorting (date descending)
+weight: -100       # You can add weight to some posts to override the default sorting (date descending)
 ---
 ### Hi there 👋
 
