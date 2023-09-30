@@ -3,6 +3,12 @@ title: Ubuntu-22.04在Docker中编译OpenFOAM-2.3.1
 description: Docker+OpenFOAM-2.3.1
 date: 2023-09-26 00:00:00+0000
 image: cover.png
+categories:
+  - Tutorials
+tags:
+  - Ubuntu
+  - Docker
+  - OpenFOAM
 weight: 1       # You can add weight to some posts to override the default sorting (date descending)
 ---
 
