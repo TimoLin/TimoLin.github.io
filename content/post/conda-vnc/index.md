@@ -85,6 +85,35 @@ miniconda(){
 ```
 重启vncserver服务或者重启系统：
 ```sh
-systectl stop vncserver@\:1.service
-systectl start vncserver@\:1.service
+systemctl stop vncserver@\:1.service
+systemctl start vncserver@\:1.service
 ```
+
+## VNC无法登录的一个解决方法
+有时在CentoOS登录界面输入密码无效，或者无法登录，可能是VNC桌面卡死了。
+
+- 方法1: 重启VNC 
+  SSH登录到目标机器，重启VNC的系统服务。但该方法会使得VNC桌面中的任务随之杀掉。
+  ```sh
+  systemctl stop vncserver@\:1.service
+  systemctl start vncserver@\:1.service
+  ```
+- 方法2： loginctl解锁桌面（参考[博文](https://zhuanlan.zhihu.com/p/507878402)） 
+  首先查看当前登录了
+  ```sh
+  loginctl list-sessions
+  ```
+  输出如下：
+  ```
+  SESSION        UID USER             SEAT
+        c1       1000 YOUR_USER_NAME
+        c2         42 gdm              seat0
+     20210       1000 YOUR_USER_NAME
+
+  3 sessions listed.
+  ```
+  解锁VNC登录界面：
+  ```sh
+  # 一般VNC的session id可能是数字
+  loginctl unlock-session 20210
+  ```
