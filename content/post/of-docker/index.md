@@ -89,6 +89,7 @@ of231
 最后可以编译或运行算例了。
 
 ## Appendix
+### Docker镜像相关
 创建docker镜像：
 ```sh
 docker build - < Dockerfile
@@ -105,4 +106,87 @@ docker login
 ```sh
 docker push ztnuaa/openfoam231:latest
 ```
+### 向已有的镜像中添加挂载目录
+参考这个方法[stackoverflow](https://stackoverflow.com/a/53516263/9145307)：  
+1. 首先关闭Docker服务
+   ```sh
+   systemctl stop docker.service
+   ```
+2. 找到容器ID与文件路径
+   ```
+   # 在该命令的输出中，查找你想要修改的容器的ID
+   docker container ls -a
 
+   # 替换“<>”为你的ID，找到容器文件的路径
+   cd /var/lib/docker/containers/<YOUR_CONTAINER_ID>
+   ```
+3. 修改`config.v2.json`配置文件，在`“MountPoints”`字典下添加你想要挂载的目录，例如：
+   原始内容：
+   ```json
+   "MountPoints": {
+        "/etc/group": {
+            "Source": "/etc/group",
+            "Destination": "/etc/group",
+            "RW": false,
+            "Name": "",
+            "Driver": "",
+            "Type": "bind",
+            "Relabel": "ro",
+            "Propagation": "rprivate",
+            "Spec": {
+                "Type": "bind",
+                "Source": "/etc/group",
+                "Target": "/etc/group",
+                "ReadOnly": true
+            },
+            "SkipMountpointCreation": false
+       }
+   }
+   ```
+   挂载宿主机目录`/home/<USER>/Data/simulation`到容器目录`/home/<USER>/calc`下：  
+   ```json
+   "MountPoints": {
+       "/etc/group": {
+            "Source": "/etc/group",
+            "Destination": "/etc/group",
+            "RW": false,
+            "Name": "",
+            "Driver": "",
+            "Type": "bind",
+            "Relabel": "ro",
+            "Propagation": "rprivate",
+            "Spec": {
+                "Type": "bind",
+                "Source": "/etc/group",
+                "Target": "/etc/group",
+                "ReadOnly": true
+            },
+            "SkipMountpointCreation": false
+        },
+        "/home/<USER>/calc": {
+            "Source": "/home/<USER>/Data/simulation",
+            "Destination": "/home/<USER>/calc",
+            "RW": false,
+            "Name": "",
+            "Driver": "",
+            "Type": "bind",
+            "Relabel": "ro",
+            "Propagation": "rprivate",
+            "Spec": {
+                "Type": "bind",
+                "Source": "/home/<USER>/Data/simulation",
+                "Target": "/home/<USER>/calc",
+                "ReadOnly": true
+            },
+        "SkipMountpointCreation": false
+       },
+   }
+   ```
+4. 重启docker服务：
+   ```sh
+   systemctl start docker.service
+   ```
+5. 进入容器：
+   ```sh
+   docker start <YOUR_CONTAINER_ID>
+   ```
