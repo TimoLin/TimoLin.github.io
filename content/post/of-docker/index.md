@@ -119,8 +119,22 @@ docker push ztnuaa/openfoam231:latest
 
    # 替换“<>”为你的ID，找到容器文件的路径
    cd /var/lib/docker/containers/<YOUR_CONTAINER_ID>
+   
    ```
-3. 修改`config.v2.json`配置文件，在`“MountPoints”`字典下添加你想要挂载的目录，例如：
+   查看目录下的文件`ls -lht`，比如输出为：
+   ```
+   -rw-r----- 1 root root 7.0M Dec 11 16:35 8ea1e4429ac9ea43df1c58ed206427383771c9724e757b369686d9440e2dc465-json.log
+   -rw------- 1 root root 4.6K Dec 11 16:11 config.v2.json
+   -rw------- 1 root root 1.6K Dec 11 16:11 hostconfig.json
+   -rw-r--r-- 1 root root   13 Dec 11 16:11 hostname
+   -rw-r--r-- 1 root root  174 Dec 11 16:11 hosts
+   -rw-r--r-- 1 root root  806 Dec 11 16:11 resolv.conf
+   -rw-r--r-- 1 root root   71 Dec 11 16:11 resolv.conf.hash
+   drwx--x--- 2 root root 4.0K Sep 26 17:02 mounts
+   drwx------ 2 root root 4.0K Sep 26 17:02 checkpoints
+
+   ```
+3. 修改`config.v2.json`配置文件，找到`“MountPoints”`关键字，在其中添加你想要挂载的目录，例如：
    原始内容：
    ```json
    "MountPoints": {
@@ -179,7 +193,7 @@ docker push ztnuaa/openfoam231:latest
                 "ReadOnly": true
             },
         "SkipMountpointCreation": false
-       },
+       }
    }
    ```
 4. 重启docker服务：
