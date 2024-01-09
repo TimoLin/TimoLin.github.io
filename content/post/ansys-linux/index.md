@@ -1,7 +1,7 @@
 ---
 title: Linux下Ansys安装与运行的常见问题
 description: Ansys under CentOS/Ubuntu
-date: 2024-1-9 00:00:00+0000
+date: 2024-01-09 00:00:00+0000
 image: cover.png
 weight: 1       # You can add weight to some posts to override the default sorting (date descending)
 categories:
