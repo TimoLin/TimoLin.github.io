@@ -14,7 +14,7 @@ tags:
 
 ## 说明
 - 编辑器：GVIM-9.0
-- LaTeX插件：[vim-tex](https://github.com/lervag/vimtex)
+- LaTeX插件：[vim-tex](https://github.com/lervag/vimtex)或者[vim-latex](https://github.com/vim-latex/vim-latex)
 - PDF阅读器：[Okular](https://okular.kde.org/)
 
 本方案参考了[StackExchange Answer](https://tex.stackexchange.com/a/531555)
@@ -32,6 +32,8 @@ latexmk -xelatex -synctex=1 file.tex
 上述选项会生成一个`file.synctex.gz`文件。
 ## 2. Tex源码定位到PDF（Tex-to-PDF）
 Okular支持打开PDF时指定到行位置，将下面的函数添加到`~/.vimrc`中：
+
+对于`vim-tex`插件：
 ```vimrc
 function! OkularFind()
     let this_tex_file = expand('%:p')
@@ -43,9 +45,25 @@ function! OkularFind()
 endfunction
 nnoremap <leader>f :call OkularFind()<cr>
 ```
-其中，对于多文件的项目，这一行是为了找到Tex项目的主文件：
+对于`vim-latex`插件：
 ```vimrc
+function! OkularFind()
+    let this_tex_file = expand('%:p')
     let master_tex_file = b:vimtex.tex
+    let pdf_file = fnamemodify(master_tex_file, ':p:r') . '.pdf'
+    let line_number = line('.')
+    let okular_cmd = 'okular --noraise --unique "' . pdf_file . '#src:' . line_number . ' ' . this_tex_file . '"'
+    let s:okular_job = job_start(['/bin/bash', '-c', okular_cmd])
+endfunction
+nnoremap <leader>f :call OkularFind()<cr>
+```
+其中，二者的区别是，对于多文件的项目如何找到Tex项目的主文件：
+```vimrc
+# vim-tex
+let master_tex_file = b:vimtex.tex
+# vim-latex
+let master_tex_file = Tex_GetMainFileName()
+
 ```
 在`gvim`下将光标移动到想要预览的内容，通过`\f`来打开`Okular`并指定到要预览的内容。
 
