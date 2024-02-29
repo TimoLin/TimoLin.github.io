@@ -49,7 +49,7 @@ nnoremap <leader>f :call OkularFind()<cr>
 ```vimrc
 function! OkularFind()
     let this_tex_file = expand('%:p')
-    let master_tex_file = b:vimtex.tex
+    let master_tex_file = Tex_GetMainFileName()
     let pdf_file = fnamemodify(master_tex_file, ':p:r') . '.pdf'
     let line_number = line('.')
     let okular_cmd = 'okular --noraise --unique "' . pdf_file . '#src:' . line_number . ' ' . this_tex_file . '"'
