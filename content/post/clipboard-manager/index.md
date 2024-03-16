@@ -15,9 +15,9 @@ weight: 1
 ---
 
 ## 需求很简单
--[] 跨平台支持（Windows/Linux）
--[] 剪贴板同步（联网或局域网均可）
--[] 无需手动推送，复制到剪贴板后自动同步
+- 跨平台支持（Windows/Linux）
+- 剪贴板同步（联网或局域网均可）
+- 无需手动推送，复制到剪贴板后自动同步
 
 但是试用了很多剪贴板管理工具，总是有各种各样的问题：
 
@@ -42,7 +42,7 @@ weight: 1
   sudo apt update
   sudo apt install copyq
   ```
-- Windows
+- Windows  
   下载[安装包CopyQ-*.*-setup.exe](https://github.com/hluk/CopyQ/releases)
 ### 配置同步功能
 同步功能是将剪贴板存储到指定的同步文件夹内， 因此需要使用第三方云盘同步软件，例如坚果云、Dropbox等有跨平台支持的云盘服务。
