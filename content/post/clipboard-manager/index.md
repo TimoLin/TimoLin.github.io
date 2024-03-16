@@ -52,17 +52,17 @@ weight: 1
 创建`CopyQ`的同步文件夹`/home/user/Dropbox/CopyQ`。
 打开CopyQ，查看`文件`-`首选项`-`标签`：
 
-![tab](./copyq-linux-1.png)
+![tab](copyq-linux-1.png)
 
 默认剪贴板存放在`&clipboard`标签页下。
 设置`文件`-`首选项`-`条目`-`同步`， 标签页设置为上图中的标签`&clipboard`，文件夹路径设置为刚刚创建的同步文件夹`/home/user/Dropbox/CopyQ`，点击`应用`。
 
 设置完成。
-![sync](./copyq-linux-2.png)
+![sync](copyq-linux-2.png)
 #### Windows
 设置方法相同，但是要注意Windows下默认的标签为`剪贴板(&C)`：
-![windows](./copyq-windows-1.png)
+![windows](copyq-windows-1.png)
 
 复制任意文字或图片后，可以看到同步文件夹下生成的`copyq_<timestamp>.*`文件，经由Dropbox自动同步到Windows端。
-![sync-clipboard](./copyq-linux-3.png)
+![sync-clipboard](copyq-linux-3.png)
 
