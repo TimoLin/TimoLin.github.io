@@ -90,7 +90,7 @@ systemctl start vncserver@\:1.service
 ```
 
 ## VNC无法登录的一个解决方法
-有时在CentoOS登录界面输入密码无效，或者无法登录，可能是VNC桌面卡死了。
+有时在CentoOS登录界面输入密码无效，多次输入密码错误后卡住，或者无法登录，可能是VNC桌面卡死了。
 
 - 方法1: 重启VNC 
   SSH登录到目标机器，重启VNC的系统服务。但该方法会使得VNC桌面中的任务随之杀掉。
@@ -114,6 +114,8 @@ systemctl start vncserver@\:1.service
   ```
   解锁VNC登录界面：
   ```sh
-  # 一般VNC的session id可能是数字
+  # 一般VNC的session id可能是数字或者c1，尝试下述命令
   loginctl unlock-session 20210
+  或
+  loginctl unlock-session c1
   ```
