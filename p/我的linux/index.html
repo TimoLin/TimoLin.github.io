@@ -1,0 +1,200 @@
+<!doctype html><html lang=zh-Hans dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content="介绍下我的Linux开发环境搭建"><title>我的Linux</title>
+<link rel=canonical href=https://TimoLin.github.io/p/%E6%88%91%E7%9A%84linux/><link rel=stylesheet href=/scss/style.min.8e60baf4cd3fc55968717a6e39762f4d28ed7ef6007566b6c7970ad0fe907198.css><meta property='og:title' content="我的Linux"><meta property='og:description' content="介绍下我的Linux开发环境搭建"><meta property='og:url' content='https://TimoLin.github.io/p/%E6%88%91%E7%9A%84linux/'><meta property='og:site_name' content="TimoLin's Blog"><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='Linux'><meta property='article:tag' content='zsh'><meta property='article:tag' content='vim'><meta property='article:tag' content='OpenFOAM'><meta property='article:published_time' content='2023-09-16T00:00:00+00:00'><meta property='article:modified_time' content='2023-09-16T00:00:00+00:00'><meta property='og:image' content='https://TimoLin.github.io/p/%E6%88%91%E7%9A%84linux/linux.jpg'><meta name=twitter:title content="我的Linux"><meta name=twitter:description content="介绍下我的Linux开发环境搭建"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content='https://TimoLin.github.io/p/%E6%88%91%E7%9A%84linux/linux.jpg'><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_hu0d5005ab741371e5286551e53a792610_201765_300x0_resize_box_3.png width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🍥</span></figure><div class=site-meta><h1 class=site-name><a href=/>TimoLin's Blog</a></h1><h2 class=site-description>Better to run than curse the road. 与其感慨路难行，不如马上出发.</h2></div></header><ol class=menu-social><li><a href=https://github.com/TimoLin target=_blank title=GitHub rel=me><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6.0 00-1.3-3.2 4.2 4.2.0 00-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3.0 00-6.2.0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2.0 00-.1 3.2A4.6 4.6.0 004 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>Home</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>Archives</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>Search</span></a></li><li><a href=/links/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>Links</span></a></li><li class=menu-bottom-section><ol class=menu><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></ol></li></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#更换国内源--更新>更换国内源 & 更新</a></li><li><a href=#安装软件>安装软件</a></li><li><a href=#配置>配置</a><ol><li><a href=#配置zsh-oh-my-zshhttpsohmyzshinstall>配置Zsh: <a href=https://ohmyz.sh/#install>oh-my-zsh</a></a></li><li><a href=#配置代理-proxychains>配置代理: proxychains</a></li><li><a href=#vim配置>VIM配置</a><ol><li><a href=#vim-plug插件管理器>VIM-Plug插件管理器</a></li><li><a href=#cocnvimhttpsgithubcomneoclidecocnvim><a href=https://github.com/neoclide/coc.nvim>coc.nvim</a></a></li></ol></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class="has-image main-article"><header class=article-header><div class=article-image><a href=/p/%E6%88%91%E7%9A%84linux/><img src=/p/%E6%88%91%E7%9A%84linux/linux_hu51fb83752bce9d90cca990fdc91ecfd0_44661_800x0_resize_q75_box.jpg srcset="/p/%E6%88%91%E7%9A%84linux/linux_hu51fb83752bce9d90cca990fdc91ecfd0_44661_800x0_resize_q75_box.jpg 800w, /p/%E6%88%91%E7%9A%84linux/linux_hu51fb83752bce9d90cca990fdc91ecfd0_44661_1600x0_resize_q75_box.jpg 1600w" width=800 height=442 loading=lazy alt="Featured image of post 我的Linux"></a></div><div class=article-details><header class=article-category><a href=/categories/linux/>Linux</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/%E6%88%91%E7%9A%84linux/>我的Linux</a></h2><h3 class=article-subtitle>介绍下我的Linux开发环境搭建</h3></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Sep 16, 2023</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 3 分钟</time></div></footer></div></header><section class=article-content><h2 id=更换国内源--更新><a href=#%e6%9b%b4%e6%8d%a2%e5%9b%bd%e5%86%85%e6%ba%90--%e6%9b%b4%e6%96%b0>#</a>
+更换国内源 & 更新</h2><p><a class=link href=https://mirrors.ustc.edu.cn/help/ubuntu.html target=_blank rel=noopener>中科大软件源</a></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>sudo sed -i <span class=s1>&#39;s/archive.ubuntu.com/mirrors.ustc.edu.cn/g&#39;</span> /etc/apt/sources.list
+</span></span><span class=line><span class=cl>sudo apt update
+</span></span><span class=line><span class=cl>sudo apt dist-upgrade
+</span></span></code></pre></td></tr></table></div></div><h2 id=安装软件><a href=#%e5%ae%89%e8%a3%85%e8%bd%af%e4%bb%b6>#</a>
+安装软件</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl><span class=c1># 更换为zsh终端</span>
+</span></span><span class=line><span class=cl>sudo apt install zsh autojump 
+</span></span><span class=line><span class=cl>sudo apt install vim ctags
+</span></span><span class=line><span class=cl>sudo apt install build-essential
+</span></span><span class=line><span class=cl><span class=c1># 代理</span>
+</span></span><span class=line><span class=cl>sudo apt install proxychains
+</span></span></code></pre></td></tr></table></div></div><h2 id=配置><a href=#%e9%85%8d%e7%bd%ae>#</a>
+配置</h2><h3 id=配置zsh-oh-my-zshhttpsohmyzshinstall><a href=#%e9%85%8d%e7%bd%aezsh-oh-my-zshhttpsohmyzshinstall>#</a>
+配置Zsh: <a class=link href=https://ohmyz.sh/#install target=_blank rel=noopener>oh-my-zsh</a></h3><p>将默认bash更换为zsh:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>chsh -s /bin/zsh
+</span></span></code></pre></td></tr></table></div></div><p>安装<code>oh-my-zsh</code>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>sh -c <span class=s2>&#34;</span><span class=k>$(</span>wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -<span class=k>)</span><span class=s2>&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=配置代理-proxychains><a href=#%e9%85%8d%e7%bd%ae%e4%bb%a3%e7%90%86-proxychains>#</a>
+配置代理: proxychains</h3><p><code>Proxychains</code>可以使任何程序通过代理上网，给终端环境下的命令带来了很多便利。
+修改<code>/etc/proxychains.conf</code>末尾行：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>socks4 127.0.0.1 <span class=m>9095</span>
+</span></span></code></pre></td></tr></table></div></div><p>为（此处假设10808为Clash或V2Ray的代理端口）：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>socks5 127.0.0.1 <span class=m>10808</span>
+</span></span></code></pre></td></tr></table></div></div><p>终端命令使用代理：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl><span class=c1># 普通命令</span>
+</span></span><span class=line><span class=cl>proxychains wget **
+</span></span><span class=line><span class=cl><span class=c1># sudo 命令</span>
+</span></span><span class=line><span class=cl>sudo proxychains apt update
+</span></span><span class=line><span class=cl>sudo proxychains apt distupgrade
+</span></span></code></pre></td></tr></table></div></div><h3 id=vim配置><a href=#vim%e9%85%8d%e7%bd%ae>#</a>
+VIM配置</h3><p>更换最新的Vim发行仓库并更新Vim</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>sudo add-apt-repository ppa:jonathonf/vim
+</span></span><span class=line><span class=cl>sudo apt update
+</span></span><span class=line><span class=cl>sudo apt install vim
+</span></span></code></pre></td></tr></table></div></div><h4 id=vim-plug插件管理器><a href=#vim-plug%e6%8f%92%e4%bb%b6%e7%ae%a1%e7%90%86%e5%99%a8>#</a>
+VIM-Plug插件管理器</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl>curl -fLo ~/.vim/autoload/plug.vim --create-dirs <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+</span></span></code></pre></td></tr></table></div></div><h4 id=cocnvimhttpsgithubcomneoclidecocnvim><a href=#cocnvimhttpsgithubcomneoclidecocnvim>#</a>
+<a class=link href=https://github.com/neoclide/coc.nvim target=_blank rel=noopener>coc.nvim</a></h4><p>(1) 安装coc依赖</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl><span class=c1># C/C++ lsp </span>
+</span></span><span class=line><span class=cl>sudo snap install ccls
+</span></span><span class=line><span class=cl>sudo apt install bear 
+</span></span><span class=line><span class=cl><span class=c1># Fortran lsp</span>
+</span></span><span class=line><span class=cl>pip3 install fortran-language-server 
+</span></span></code></pre></td></tr></table></div></div><p>插件安装，在vim命令模式下输入：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>:CocInstall coc-pyright
+</span></span></code></pre></td></tr></table></div></div><p>(2) C/C++程序生成 <code>compile_commands.json</code></p><ol><li><p>对采用<code>cmake</code>编译的程序，例如 <code>FlameMaster</code></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl><span class=c1># Recompile with `-DCMAKE_EXPORT_COMPILE_COMMANDS=1 option`</span>
+</span></span><span class=line><span class=cl>cmake ../Repository -DCMAKE_BUILD_TYPE<span class=o>=</span>Release -DCMAKE_EXPORT_COMPILE_COMMANDS<span class=o>=</span><span class=m>1</span>
+</span></span><span class=line><span class=cl>cmake --build . --parallel --target install --config Release
+</span></span><span class=line><span class=cl>cp compile_commands.json ../Repository/
+</span></span></code></pre></td></tr></table></div></div></li><li><p>对直接采用 <code>make</code> 编译的程序，例如 <code>OpenFOAM</code></p><p>参考 <a class=link href=https://openfoamwiki.net/index.php/HowTo_Use_OpenFOAM_with_Visual_Studio_Code target=_blank rel=noopener>教程</a>.</p><p>对较低版本的OpenFOAM，修改 OpenFOAM-2.3.1/wmake/wmake:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-diff data-lang=diff><span class=line><span class=cl> +#------------------------------------------------------------------------------
+</span></span><span class=line><span class=cl> +# check if bear is installed and we are not already running under bear
+</span></span><span class=line><span class=cl> +#------------------------------------------------------------------------------
+</span></span><span class=line><span class=cl> +
+</span></span><span class=line><span class=cl> +if [ -z &#34;${RUNNING_UNDER_BEAR}&#34; ] ; then
+</span></span><span class=line><span class=cl> +    if ! bear --version &gt; /dev/null ; then
+</span></span><span class=line><span class=cl> +        echo &#34;WARNING: bear is not installed -&gt; There will be no compile_commands.json output.&#34; 1&gt;&amp;2
+</span></span><span class=line><span class=cl> +    elif printf &#39;%s\n%s\n&#39; &#34;bear 3.0.0&#34; &#34;$(bear --version)&#34; | sort -V -C ; then
+</span></span><span class=line><span class=cl> +        #bear version &gt;= 3.0.0
+</span></span><span class=line><span class=cl> +        export RUNNING_UNDER_BEAR=true
+</span></span><span class=line><span class=cl> +        mkdir -p $FOAM_LIBBIN
+</span></span><span class=line><span class=cl> +        bear --append --output $FOAM_LIBBIN/../compile_commands.json -- wmake $@
+</span></span><span class=line><span class=cl> +        exit $?
+</span></span><span class=line><span class=cl> +    elif printf &#39;%s\n%s\n&#39; &#34;bear 2.0.0&#34; &#34;$(bear --version)&#34; | sort -V -C ; then
+</span></span><span class=line><span class=cl> +        #bear version &gt;= 2.0.0
+</span></span><span class=line><span class=cl> +        export RUNNING_UNDER_BEAR=true
+</span></span><span class=line><span class=cl> +        mkdir -p $FOAM_LIBBIN
+</span></span><span class=line><span class=cl> +        bear --append -o $FOAM_LIBBIN/../compile_commands.json wmake $@
+</span></span><span class=line><span class=cl> +        exit $?
+</span></span><span class=line><span class=cl> +    else
+</span></span><span class=line><span class=cl> +        echo &#34;WARNING: bear version is below 2.0.0 -&gt; There will be no compile_commands.json output.&#34; 1&gt;&amp;2
+</span></span><span class=line><span class=cl> +    fi
+</span></span><span class=line><span class=cl> +fi
+</span></span></code></pre></td></tr></table></div></div><p>在 <code>OpenFOAM-2.3.1/bin/tools</code> 中添加<a class=link href=https://develop.openfoam.com/Development/openfoam/-/blob/a50047bbcc9ee270ebddd6e95ea7d0e01f2a525f/bin/tools/vscode-settings target=_blank rel=noopener><code>vscode-settings</code></a>。</p><p>Generate VSCode setting files:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl><span class=nb>cd</span> <span class=nv>$WM_PROJECT_DIR</span>
+</span></span><span class=line><span class=cl>mkdir .vscode
+</span></span><span class=line><span class=cl>./bin/tools/vscode-setting &gt; .vscode/settings.json
+</span></span><span class=line><span class=cl><span class=c1># Clean OpenFOAM installation</span>
+</span></span><span class=line><span class=cl>wclean all
+</span></span><span class=line><span class=cl><span class=c1># Re-build</span>
+</span></span><span class=line><span class=cl>./Allwmake
+</span></span></code></pre></td></tr></table></div></div><p>创建软链接： <code>VIM</code>/<code>coc.nvim</code>:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh><span class=line><span class=cl><span class=nb>cd</span> <span class=nv>$WM_PROJECT_DIR</span>
+</span></span><span class=line><span class=cl>ln -s ~/OpenFOAM/OpenFOAM-2.3.1/platforms/linux64GccDPOpt/compile_commands.json ./compile_commands.json
+</span></span></code></pre></td></tr></table></div></div></li></ol><p>(4) 附录:</p><ol><li><code>coc-settings.json</code>(位于 <code>~/.vim</code>下):<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nt>&#34;languageserver&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;ccls&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;command&#34;</span><span class=p>:</span> <span class=s2>&#34;ccls&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;filetypes&#34;</span><span class=p>:</span> <span class=p>[</span><span class=s2>&#34;c&#34;</span><span class=p>,</span> <span class=s2>&#34;cc&#34;</span><span class=p>,</span> <span class=s2>&#34;cpp&#34;</span><span class=p>,</span> <span class=s2>&#34;c++&#34;</span><span class=p>,</span> <span class=s2>&#34;objc&#34;</span><span class=p>,</span> <span class=s2>&#34;objcpp&#34;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;rootPatterns&#34;</span><span class=p>:</span> <span class=p>[</span><span class=s2>&#34;.ccls&#34;</span><span class=p>,</span> <span class=s2>&#34;compile_commands.json&#34;</span><span class=p>,</span> <span class=s2>&#34;.git/&#34;</span><span class=p>,</span> <span class=s2>&#34;.root&#34;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;initializationOptions&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;cache&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=nt>&#34;directory&#34;</span><span class=p>:</span> <span class=s2>&#34;.cache/ccls&#34;</span>
+</span></span><span class=line><span class=cl>                <span class=p>},</span>
+</span></span><span class=line><span class=cl>                <span class=nt>&#34;highlight&#34;</span><span class=p>:</span> <span class=p>{</span><span class=nt>&#34;lsRanges&#34;</span><span class=p>:</span> <span class=kc>true</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>},</span>
+</span></span><span class=line><span class=cl>        <span class=nt>&#34;fortran&#34;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;command&#34;</span><span class=p>:</span> <span class=s2>&#34;fortls&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;filetypes&#34;</span><span class=p>:</span> <span class=p>[</span><span class=s2>&#34;fortran&#34;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>            <span class=nt>&#34;rootPatterns&#34;</span><span class=p>:</span> <span class=p>[</span><span class=s2>&#34;.fortls&#34;</span><span class=p>,</span> <span class=s2>&#34;.git/&#34;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div></li></ol></section><footer class=article-footer><section class=article-tags><a href=/tags/linux/>Linux</a>
+<a href=/tags/zsh/>Zsh</a>
+<a href=/tags/vim/>Vim</a>
+<a href=/tags/openfoam/>OpenFOAM</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css integrity=sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV crossorigin=anonymous><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js integrity=sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8 crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous defer></script><script>window.addEventListener("DOMContentLoaded",()=>{renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1},{left:"\\(",right:"\\)",display:!1},{left:"\\[",right:"\\]",display:!0}],ignoredClasses:["gist"]})})</script></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article class=has-image><a href=/p/paraview%E4%B8%AD%E5%9E%82%E7%9B%B4%E6%94%BE%E7%BD%AE%E6%96%87%E6%9C%AC%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95/><div class=article-image><img src=/p/paraview%E4%B8%AD%E5%9E%82%E7%9B%B4%E6%94%BE%E7%BD%AE%E6%96%87%E6%9C%AC%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95/cover.935dd89190b4a4efd15432bbee0f69c5_hu8cee2441eeb8f12d0698c871cad182d0_75494_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post Paraview中垂直放置文本的一种方法" data-hash="md5-k13YkZC0pO/RVDK77g9pxQ=="></div><div class=article-details><h2 class=article-title>Paraview中垂直放置文本的一种方法</h2></div></a></article><article class=has-image><a href=/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/><div class=article-image><img src=/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/cover.0a06fb981dfd12181c1181ffdae40c9b_hud7ef11c5b6e88b15bf787f241ef12c84_26379_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post 跨平台剪贴板同步方案-CopyQ" data-hash="md5-Cgb7mB39EhgcEYH/2uQMmw=="></div><div class=article-details><h2 class=article-title>跨平台剪贴板同步方案-CopyQ</h2></div></a></article><article class=has-image><a href=/p/gvim%E4%B8%8B%E7%9A%84latex%E7%BC%96%E8%AF%91%E5%AE%9E%E6%97%B6%E9%A2%84%E8%A7%88/><div class=article-image><img src=/p/gvim%E4%B8%8B%E7%9A%84latex%E7%BC%96%E8%AF%91%E5%AE%9E%E6%97%B6%E9%A2%84%E8%A7%88/cover.ecb1fd784c8274aba5f9901e2cd83cf2_hu321bd80fdc000e5985c08e37002241e9_134486_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post GVIM下的LaTeX编译实时预览" data-hash="md5-7LH9eEyCdKul+ZAeLNg88g=="></div><div class=article-details><h2 class=article-title>GVIM下的LaTeX编译实时预览</h2></div></a></article><article class=has-image><a href=/p/linux%E4%B8%8Bansys%E5%AE%89%E8%A3%85%E4%B8%8E%E8%BF%90%E8%A1%8C%E7%9A%84%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/><div class=article-image><img src=/p/linux%E4%B8%8Bansys%E5%AE%89%E8%A3%85%E4%B8%8E%E8%BF%90%E8%A1%8C%E7%9A%84%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/cover.f3897dd33ba834ff757faa162430cee7_hud79406347d9eb15bf0fac28bd8bb8245_10206_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post Linux下Ansys安装与运行的常见问题" data-hash="md5-84l90zuoNP91f6oWJDDO5w=="></div><div class=article-details><h2 class=article-title>Linux下Ansys安装与运行的常见问题</h2></div></a></article><article class=has-image><a href=/p/centos%E4%B8%8Bminiconda%E5%AF%BC%E8%87%B4vnc%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/><div class=article-image><img src=/p/centos%E4%B8%8Bminiconda%E5%AF%BC%E8%87%B4vnc%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/cover.fe5b25a8e6c64c77f9fe4c1c9f5b4648_huda79a7e7c3dc128829d9435f28531a06_64874_250x150_fill_box_smart1_3.png width=250 height=150 loading=lazy alt="Featured image of post CentOS下Miniconda导致VNC无法启动的解决方案" data-hash="md5-/lslqObGTHf5/kwcn1tGSA=="></div><div class=article-details><h2 class=article-title>CentOS下Miniconda导致VNC无法启动的解决方案</h2></div></a></article></div></div></aside><div id=gitalk-container></div><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css><script src=https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js></script><script src=https://cdn.jsdelivr.net/npm/blueimp-md5@2.18.0/js/md5.min.js></script><script>const gitalk=new Gitalk({clientID:"41910e63b60926623f76",clientSecret:"9d1cf54d499633a2bd8d54a29bf09d76b430bd8b",repo:"TimoLin.github.io",owner:"TimoLin",admin:["TimoLin"],distractionFreeMode:!1,id:md5(location.pathname)});(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("gitalk-container").innerHTML="Gitalk comments not available by default when the website is previewed locally.";return}gitalk.render("gitalk-container")})()</script><footer class=site-footer><section class=copyright>&copy;
+2020 -
+2024 TimoLin's Blog</section><section class=powerby>使用 <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> 构建<br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.25.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
