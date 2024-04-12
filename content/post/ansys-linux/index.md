@@ -92,3 +92,20 @@ Ubuntu默认使用dash，确实一些shell特性，需要将其修改为bash：
 # 运行下面的命令，并在弹出的窗口中选择No
 sudo dpkg-reconfigure dash
 ```
+
+## 4. Ansys 23R1许可证管理器 Get System HostID Information报错
+提示`lmutil`文件不存在，但是实际是有这个文件：
+- CentOS 7.6
+  手动运行`lmutil`，报错如下：
+  ```
+  /lib64/ld-lsb-x86-64.so.3: bad ELF interpreter: No such file or directory
+  ```
+  [解决方案](https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/Lmutil-error-lib64ld-lsb-x86-64-so-3-bad-ELF-interpreter.html)：
+  ```sh
+  yum install redhat-lsb
+  ```
+- Ubuntu 22.04
+  [参考](https://www.bilibili.com/read/cv27369082/)：
+  ```sh
+  sudo ln -s /lib64/ld-linux-x86-64.so.2 /lib64/ld-lsb-x86-64.so.3
+  ```
