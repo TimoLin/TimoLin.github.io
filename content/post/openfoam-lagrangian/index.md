@@ -71,7 +71,7 @@ void Foam::reconstructLagrangianPositions
     DynamicList<scalar> times(0);
     DynamicList<List<scalar> > regions(0);
 
-    word fName = "test.csv";
+    word fName = "reconstruct.ini";
     IFstream file(fName);
 
     if (!file.good())
