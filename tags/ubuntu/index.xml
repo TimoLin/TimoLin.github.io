@@ -1,0 +1,732 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ubuntu on TimoLin's Blog</title><link>https://TimoLin.github.io/tags/ubuntu/</link><description>Recent content in Ubuntu on TimoLin's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-Hans</language><lastBuildDate>Thu, 01 Feb 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://TimoLin.github.io/tags/ubuntu/index.xml" rel="self" type="application/rss+xml"/><item><title>GVIM下的LaTeX编译实时预览</title><link>https://TimoLin.github.io/p/gvim%E4%B8%8B%E7%9A%84latex%E7%BC%96%E8%AF%91%E5%AE%9E%E6%97%B6%E9%A2%84%E8%A7%88/</link><pubDate>Thu, 01 Feb 2024 00:00:00 +0000</pubDate><guid>https://TimoLin.github.io/p/gvim%E4%B8%8B%E7%9A%84latex%E7%BC%96%E8%AF%91%E5%AE%9E%E6%97%B6%E9%A2%84%E8%A7%88/</guid><description>&lt;img src="https://TimoLin.github.io/p/gvim%E4%B8%8B%E7%9A%84latex%E7%BC%96%E8%AF%91%E5%AE%9E%E6%97%B6%E9%A2%84%E8%A7%88/cover.png" alt="Featured image of post GVIM下的LaTeX编译实时预览" />&lt;h2 id="说明">说明
+&lt;/h2>&lt;ul>
+&lt;li>编辑器：GVIM-9.0&lt;/li>
+&lt;li>LaTeX插件：&lt;a class="link" href="https://github.com/lervag/vimtex" target="_blank" rel="noopener"
+>vim-tex&lt;/a>或者&lt;a class="link" href="https://github.com/vim-latex/vim-latex" target="_blank" rel="noopener"
+>vim-latex&lt;/a>&lt;/li>
+&lt;li>PDF阅读器：&lt;a class="link" href="https://okular.kde.org/" target="_blank" rel="noopener"
+>Okular&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;p>本方案参考了&lt;a class="link" href="https://tex.stackexchange.com/a/531555" target="_blank" rel="noopener"
+>StackExchange Answer&lt;/a>&lt;/p>
+&lt;h2 id="1-latex编译时打开synctex支持">1. LaTeX编译时打开SyncTeX支持
+&lt;/h2>&lt;p>编译时打开SyncTeX支持才能够在tex与PDF之间进行跳转。
+例如使用&lt;code>pdflatex&lt;/code>时：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">pdflatex -synctex&lt;span class="o">=&lt;/span>&lt;span class="m">1&lt;/span> file.tex
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>或者使用&lt;code>latexmk&lt;/code>时：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">latexmk -xelatex -synctex=1 file.tex
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>上述选项会生成一个&lt;code>file.synctex.gz&lt;/code>文件。&lt;/p>
+&lt;h2 id="2-tex源码定位到pdftex-to-pdf">2. Tex源码定位到PDF（Tex-to-PDF）
+&lt;/h2>&lt;p>Okular支持打开PDF时指定到行位置，将下面的函数添加到&lt;code>~/.vimrc&lt;/code>中：&lt;/p>
+&lt;p>对于&lt;code>vim-tex&lt;/code>插件：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-vimrc" data-lang="vimrc">&lt;span class="line">&lt;span class="cl">&lt;span class="k">function&lt;/span>&lt;span class="p">!&lt;/span> &lt;span class="nx">OkularFind&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">this_tex_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">expand&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;%:p&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">master_tex_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">b&lt;/span>:&lt;span class="nx">vimtex&lt;/span>.&lt;span class="nx">tex&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">pdf_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">fnamemodify&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">master_tex_file&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;:p:r&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> . &lt;span class="s1">&amp;#39;.pdf&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">line_number&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">line&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;.&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">okular_cmd&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s1">&amp;#39;okular --noraise --unique &amp;#34;&amp;#39;&lt;/span> . &lt;span class="nx">pdf_file&lt;/span> . &lt;span class="s1">&amp;#39;#src:&amp;#39;&lt;/span> . &lt;span class="nx">line_number&lt;/span> . &lt;span class="s1">&amp;#39; &amp;#39;&lt;/span> . &lt;span class="nx">this_tex_file&lt;/span> . &lt;span class="s1">&amp;#39;&amp;#34;&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">s&lt;/span>:&lt;span class="nx">okular_job&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">job_start&lt;/span>&lt;span class="p">(&lt;/span>[&lt;span class="s1">&amp;#39;/bin/bash&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;-c&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">okular_cmd&lt;/span>]&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">endfunction&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">nnoremap&lt;/span> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nx">leader&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>&lt;span class="nx">f&lt;/span> :&lt;span class="nx">call&lt;/span> &lt;span class="nx">OkularFind&lt;/span>&lt;span class="p">()&amp;lt;&lt;/span>&lt;span class="nx">cr&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>对于&lt;code>vim-latex&lt;/code>插件：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-vimrc" data-lang="vimrc">&lt;span class="line">&lt;span class="cl">&lt;span class="k">function&lt;/span>&lt;span class="p">!&lt;/span> &lt;span class="nx">OkularFind&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">this_tex_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">expand&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;%:p&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">master_tex_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">Tex_GetMainFileName&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">pdf_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">fnamemodify&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">master_tex_file&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;:p:r&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> . &lt;span class="s1">&amp;#39;.pdf&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">line_number&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">line&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;.&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">okular_cmd&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s1">&amp;#39;okular --noraise --unique &amp;#34;&amp;#39;&lt;/span> . &lt;span class="nx">pdf_file&lt;/span> . &lt;span class="s1">&amp;#39;#src:&amp;#39;&lt;/span> . &lt;span class="nx">line_number&lt;/span> . &lt;span class="s1">&amp;#39; &amp;#39;&lt;/span> . &lt;span class="nx">this_tex_file&lt;/span> . &lt;span class="s1">&amp;#39;&amp;#34;&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">s&lt;/span>:&lt;span class="nx">okular_job&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">job_start&lt;/span>&lt;span class="p">(&lt;/span>[&lt;span class="s1">&amp;#39;/bin/bash&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;-c&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">okular_cmd&lt;/span>]&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">endfunction&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">nnoremap&lt;/span> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nx">leader&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>&lt;span class="nx">f&lt;/span> :&lt;span class="nx">call&lt;/span> &lt;span class="nx">OkularFind&lt;/span>&lt;span class="p">()&amp;lt;&lt;/span>&lt;span class="nx">cr&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>其中，二者的区别是，对于多文件的项目如何找到Tex项目的主文件：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-vimrc" data-lang="vimrc">&lt;span class="line">&lt;span class="cl"># &lt;span class="nx">vim&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="nx">tex&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">let&lt;/span> &lt;span class="nx">master_tex_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">b&lt;/span>:&lt;span class="nx">vimtex&lt;/span>.&lt;span class="nx">tex&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># &lt;span class="nx">vim&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="nx">latex&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">let&lt;/span> &lt;span class="nx">master_tex_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">Tex_GetMainFileName&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在&lt;code>gvim&lt;/code>下将光标移动到想要预览的内容，通过&lt;code>\f&lt;/code>来打开&lt;code>Okular&lt;/code>并指定到要预览的内容。&lt;/p>
+&lt;h2 id="3-pdf定位到tex源码pdf-to-tex">3. PDF定位到Tex源码（PDF-To-Tex）
+&lt;/h2>&lt;p>在&lt;code>Okular&lt;/code>中设置以下：&lt;/p>
+&lt;ol>
+&lt;li>&lt;code>设置&lt;/code> - &lt;code>Settings&lt;/code>&lt;/li>
+&lt;li>&lt;code>配置Okular&lt;/code> - &lt;code>Configure Okular&lt;/code>&lt;/li>
+&lt;li>&lt;code>编辑器&lt;/code> - &lt;code>Editor&lt;/code>&lt;/li>
+&lt;li>&lt;code>选择自定义文本编辑器&lt;/code> - &lt;code>Custom Text Editor&lt;/code>&lt;/li>
+&lt;li>&lt;code>在命令框中填入下列命令&lt;/code> - &lt;code>Input the following command&lt;/code>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">gvim --remote +%l %f
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;p>在浏览模式下，使用快捷键&lt;code>Shift+鼠标左键&lt;/code>单击想要查看源码的内容，即可跳转到相应的Tex源码文件位置中。&lt;/p></description></item><item><title>Linux下Ansys安装与运行的常见问题</title><link>https://TimoLin.github.io/p/linux%E4%B8%8Bansys%E5%AE%89%E8%A3%85%E4%B8%8E%E8%BF%90%E8%A1%8C%E7%9A%84%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/</link><pubDate>Tue, 09 Jan 2024 00:00:00 +0000</pubDate><guid>https://TimoLin.github.io/p/linux%E4%B8%8Bansys%E5%AE%89%E8%A3%85%E4%B8%8E%E8%BF%90%E8%A1%8C%E7%9A%84%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/</guid><description>&lt;img src="https://TimoLin.github.io/p/linux%E4%B8%8Bansys%E5%AE%89%E8%A3%85%E4%B8%8E%E8%BF%90%E8%A1%8C%E7%9A%84%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/cover.png" alt="Featured image of post Linux下Ansys安装与运行的常见问题" />&lt;h2 id="1-打开fluenticem出现许可证错误">1. 打开Fluent/ICEM出现许可证错误
+&lt;/h2>&lt;ul>
+&lt;li>版本：22R1&lt;/li>
+&lt;li>权限：root安装至&lt;code>/usr/ansys_inc&lt;/code>，普通用户使用&lt;/li>
+&lt;li>系统：CentOS 7&lt;/li>
+&lt;/ul>
+&lt;p>查看对应的日志文件 &lt;code>~/.ansys/ansyscl.localhost.*.log&lt;/code>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 INFO ANSYSLI_CMD=/usr/ansys_inc/v221/licensingclient/linx64/ansyscl -acl 19510.29709 -nodaemon -log ~/.ansys/ansyscl.localhost.19510.29709.log
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 INFO ANSYSLI_INITIALIZATION_FILE=&amp;#39;/usr/ansys_inc/shared_files/licensing/ansyslmd.ini&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 INFO ANSYSLI_PRODORD_FILE=&amp;#39;/usr/ansys_inc/shared_files/licensing/prodord/ansysli.prodord.xml&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 INFO ANSYSLI_TIMEOUT_FLEXLM=15
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 ERROR /usr/ansys_inc/shared_files/licensing/ansyslmd.ini is invalid.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Could not read option file /usr/ansys_inc/shared_files/licensing/ansyslmd.ini.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 ERROR Exiting.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>发现Ansys的许可证管理器无法正确读取配置文件，排除&lt;code>shared_files&lt;/code>下的文件不存在等弱智原因后，可能和文件夹的权限有关系：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 查看文件权限信息&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ls -lht /usr/ansys_inc/shared_files/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>输出如下，文件的所有权为root，是导致许可证无法读取的原因：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">drwxr-xr-x. 9 root root 159 May 12 2023 licensing
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x. 3 root root 20 Nov 13 2021 bin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x. 9 root root 112 Nov 13 2021 lib
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x. 3 root root 20 Nov 13 2021 syslib
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>修改文件夹所有权为普通用户，以解决许可证文件访问问题：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 进入root&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">su
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 修改权限&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">chown &lt;span class="nv">$USER&lt;/span> -R /usr/ansys_inc/shared_files
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>打开Fluent或ICEM，查看问题是否已解决。&lt;/p>
+&lt;h2 id="2-打开icem报错">2. 打开ICEM报错
+&lt;/h2>&lt;p>终端输入&lt;code>icemcfd&lt;/code>，报错如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">ICEM_ACN&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="s2">&amp;#34;/usr/ansys_inc/v221/icemcfd/linux64_amd&amp;#34;&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">LD_LIBRARY_PATH&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="s2">&amp;#34;/usr/ansys_inc/v221/icemcfd/linux64_amd/lib:/usr/ansys_inc/v221/icemcfd/linux64_amd/bin:/usr/ansys_inc/v221/icemcfd/linux64_amd/dif/iges:/usr/ansys_inc/v221/icemcfd/linux64_amd/../../Framework/bin/Linux64:/usr/ansys_inc/v221/icemcfd/linux64_amd/../../tp/IntelCompiler/2019.3.199/linx64/lib/intel64:/usr/ansys_inc/v221/icemcfd/linux64_amd/../../tp/qt_fw/5.9.6/Linux64/lib:/usr/ansys_inc/v221/icemcfd/linux64_amd/../../tp/hdf5/1_10_5/linx64/lib&amp;#34;&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">args&lt;/span> &lt;span class="o">=&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Window&lt;/span> &lt;span class="n">information&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">depth&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">24&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">class&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">4&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">visual&lt;/span> &lt;span class="n">depth&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">24&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">4&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">can&lt;/span>&lt;span class="s1">&amp;#39;t load font screen14, using variable&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Signal&lt;/span> &lt;span class="mi">11&lt;/span> &lt;span class="n">caught&lt;/span>&lt;span class="o">!&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">segmentation&lt;/span> &lt;span class="n">violation&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">exiting&lt;/span> &lt;span class="n">after&lt;/span> &lt;span class="n">doing&lt;/span> &lt;span class="n">an&lt;/span> &lt;span class="n">emergency&lt;/span> &lt;span class="n">save&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Exiting&lt;/span>&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Exit&lt;/span> &lt;span class="n">from&lt;/span> &lt;span class="n">ICEM&lt;/span> &lt;span class="n">CFD&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>解决方案，&lt;a class="link" href="" >安装对应的字体文件&lt;/a>：&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://thelinuxcluster.com/2020/09/30/fixing-cant-load-screen14-issues-for-ansys-2020-r1/" target="_blank" rel="noopener"
+>CentOS&lt;/a>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">yum install xorg-x11-fonts-*
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.cfd-online.com/Forums/ansys-meshing/89147-error-when-starting-icem-cfd-ubuntu.html" target="_blank" rel="noopener"
+>Ubuntu&lt;/a>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">apt-get install xfonts-75dpi xfonts-100dpi
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;h2 id="3-ubuntu打开fluent报错">3. Ubuntu打开Fluent报错
+&lt;/h2>&lt;p>通常发生在新系统上第一次安装Ansys后，报错如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/bin/fluent: 69: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/bin/fluent: 813: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/bin/fluent: 836: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/bin/fluent: 838: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/fluent22.1.0/bin/fluent -r22.1.0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/fluent22.1.0/bin/fluent: 112: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/fluent22.1.0/bin/fluent: 744: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/fluent22.1.0/bin/fluent: 1108: [[: not found
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Ubuntu默认使用dash，确实一些shell特性，需要将其修改为bash：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 运行下面的命令，并在弹出的窗口中选择No&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo dpkg-reconfigure dash
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="4-ansys-23r1许可证管理器-get-system-hostid-information报错">4. Ansys 23R1许可证管理器 Get System HostID Information报错
+&lt;/h2>&lt;p>提示&lt;code>lmutil&lt;/code>文件不存在，但是实际是有这个文件：&lt;/p>
+&lt;ul>
+&lt;li>CentOS 7.6
+手动运行&lt;code>lmutil&lt;/code>，报错如下：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">/lib64/ld-lsb-x86-64.so.3: bad ELF interpreter: No such file or directory
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;a class="link" href="https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/Lmutil-error-lib64ld-lsb-x86-64-so-3-bad-ELF-interpreter.html" target="_blank" rel="noopener"
+>解决方案&lt;/a>：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">yum install redhat-lsb
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>Ubuntu 22.04
+&lt;a class="link" href="https://www.bilibili.com/read/cv27369082/" target="_blank" rel="noopener"
+>参考&lt;/a>：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo ln -s /lib64/ld-linux-x86-64.so.2 /lib64/ld-lsb-x86-64.so.3
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul></description></item><item><title>Ubuntu-22.04在Docker中编译OpenFOAM-2.3.1</title><link>https://TimoLin.github.io/p/ubuntu-22.04%E5%9C%A8docker%E4%B8%AD%E7%BC%96%E8%AF%91openfoam-2.3.1/</link><pubDate>Tue, 26 Sep 2023 00:00:00 +0000</pubDate><guid>https://TimoLin.github.io/p/ubuntu-22.04%E5%9C%A8docker%E4%B8%AD%E7%BC%96%E8%AF%91openfoam-2.3.1/</guid><description>&lt;img src="https://TimoLin.github.io/p/ubuntu-22.04%E5%9C%A8docker%E4%B8%AD%E7%BC%96%E8%AF%91openfoam-2.3.1/cover.png" alt="Featured image of post Ubuntu-22.04在Docker中编译OpenFOAM-2.3.1" />&lt;p>宿主机：Ubuntu-22.04
+Docker容器：Ubuntu-18.04
+OpenFOAM版本：v2.3.1&lt;/p>
+&lt;h2 id="问题描述">问题描述
+&lt;/h2>&lt;p>Ubuntu-22.04中的gcc-11版本过高，无法编译低版本OpenFOAM（v2.3.1需要gcc-4.8~5.5）。&lt;/p>
+&lt;h2 id="解决方案">解决方案
+&lt;/h2>&lt;ul>
+&lt;li>创建基于&lt;code>Ubuntu-18.04&lt;/code>的Docker容器&lt;/li>
+&lt;li>搭建OpenFOAM编译环境&lt;/li>
+&lt;li>建立宿主机&lt;code>OpenFOAM&lt;/code>代码与算例的目录到docker目录的映射&lt;/li>
+&lt;li>宿主机下修改代码&lt;/li>
+&lt;li>Docker容器中编译代码，执行算例&lt;/li>
+&lt;li>宿主机下&lt;code>Tecplot&lt;/code>/&lt;code>Paraview&lt;/code>查看结果&lt;/li>
+&lt;/ul>
+&lt;h2 id="依赖">依赖
+&lt;/h2>&lt;ol>
+&lt;li>查看&lt;a class="link" href="https://docs.docker.com/engine/install/ubuntu/" target="_blank" rel="noopener"
+>官方教程&lt;/a>安装docker。&lt;/li>
+&lt;li>设置&lt;a class="link" href="https://askubuntu.com/questions/477551/how-can-i-use-docker-without-sudo" target="_blank" rel="noopener"
+>免ROOT使用docker命令&lt;/a>&lt;/li>
+&lt;/ol>
+&lt;h2 id="具体步骤">具体步骤
+&lt;/h2>&lt;h3 id="拉取openfoam231-dockerhttpsgithubcomtimolinopenfoam231-docker脚本">拉取&lt;a class="link" href="https://github.com/TimoLin/openfoam231-docker" target="_blank" rel="noopener"
+>OpenFOAM231-docker&lt;/a>脚本
+&lt;/h3>&lt;p>例如放到&lt;code>$HOME/github&lt;/code>文件夹&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> &lt;span class="nv">$HOME&lt;/span>/github
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">git clone https://github.com/TimoLin/openfoam231-docker.git
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>或者&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">git clone git@github.com:TimoLin/openfoam231-docker.git
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="创建of231镜像">创建&lt;code>of231&lt;/code>镜像
+&lt;/h3>&lt;p>运行脚本&lt;code>prepareOpenFOAM231.sh&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">./prepareOpenFOAM231.sh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>输出如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">*******************************************************
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Following Docker containers are present on your system:
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">*******************************************************
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">64ee332b50a6 caecf4ca1e48 &amp;#34;/bin/sh -c &amp;#39;sh -c \&amp;#34;…&amp;#34; 2 hours ago Exited (1) 2 hours ago crazy_benz
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">WM_CC
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">*******************************************************
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Creating Docker OpenFOAM container openfoam231
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">8ea1e4429ac9ea43df1c58ed206427383771c9724e757b369686d9440e2dc465
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Container openfoam231 was created.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">*******************************************************
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">Run the ./startOpenFOAM script to launch container
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">*******************************************************
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="使用镜像">使用镜像
+&lt;/h2>&lt;p>首先在宿主机&lt;code>$HOME/OpenFOAM&lt;/code>文件夹下创建OpenFOAM环境变量文件&lt;code>of-env.bashrc&lt;/code>，内容如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">source&lt;/span> &lt;span class="nv">$HOME&lt;/span>/OpenFOAM/OpenFOAM-2.3.1/etc/bashrc &lt;span class="nv">WM_NCOMPPROCS&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="m">4&lt;/span> &lt;span class="nv">WM_MPLIB&lt;/span>&lt;span class="o">=&lt;/span>SYSTEMOPENMPI
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">export&lt;/span> &lt;span class="nv">WM_CC&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;gcc-5&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">export&lt;/span> &lt;span class="nv">WM_CXX&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s1">&amp;#39;g++-5&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">export&lt;/span> &lt;span class="nv">WM_NCOMPPROCS&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="m">4&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nb">export&lt;/span> &lt;span class="nv">WM_MPLIB&lt;/span>&lt;span class="o">=&lt;/span>SYSTEMOPENMPI
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>运行脚本&lt;code>startOpenFOAM231.sh&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">./startOpenFOAM231.sh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>输出：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">Entering container openfoam231:8ea1e4429ac9...
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">8ea1e4429ac9%
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在docker中激活openfoam环境：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">of231
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>最后可以编译或运行算例了。&lt;/p>
+&lt;h2 id="appendix">Appendix
+&lt;/h2>&lt;h3 id="docker镜像相关">Docker镜像相关
+&lt;/h3>&lt;p>创建docker镜像：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">docker build - &amp;lt; Dockerfile
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>打tag：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">docker tag REPLACE_WITH_DOCKER_IMAGE_ID ztnuaa/openfoam231:latest
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>登录dockerhub：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">docker login
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>推送到dockerhub：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">docker push ztnuaa/openfoam231:latest
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="向已有的镜像中添加挂载目录">向已有的镜像中添加挂载目录
+&lt;/h3>&lt;p>参考这个方法&lt;a class="link" href="https://stackoverflow.com/a/53516263/9145307" target="_blank" rel="noopener"
+>stackoverflow&lt;/a>：&lt;/p>
+&lt;ol>
+&lt;li>首先关闭Docker服务
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">systemctl stop docker.service
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>找到容器ID与文件路径
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 在该命令的输出中，查找你想要修改的容器的ID&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">docker&lt;/span> &lt;span class="n">container&lt;/span> &lt;span class="n">ls&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">a&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 替换“&amp;lt;&amp;gt;”为你的ID，找到容器文件的路径&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">cd&lt;/span> &lt;span class="o">/&lt;/span>&lt;span class="k">var&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">lib&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">docker&lt;/span>&lt;span class="o">/&lt;/span>&lt;span class="n">containers&lt;/span>&lt;span class="o">/&amp;lt;&lt;/span>&lt;span class="n">YOUR_CONTAINER_ID&lt;/span>&lt;span class="o">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>查看目录下的文件&lt;code>ls -lht&lt;/code>，比如输出为：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">-rw-r----- 1 root root 7.0M Dec 11 16:35 8ea1e4429ac9ea43df1c58ed206427383771c9724e757b369686d9440e2dc465-json.log
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw------- 1 root root 4.6K Dec 11 16:11 config.v2.json
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw------- 1 root root 1.6K Dec 11 16:11 hostconfig.json
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- 1 root root 13 Dec 11 16:11 hostname
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- 1 root root 174 Dec 11 16:11 hosts
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- 1 root root 806 Dec 11 16:11 resolv.conf
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">-rw-r--r-- 1 root root 71 Dec 11 16:11 resolv.conf.hash
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwx--x--- 2 root root 4.0K Sep 26 17:02 mounts
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwx------ 2 root root 4.0K Sep 26 17:02 checkpoints
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>修改&lt;code>config.v2.json&lt;/code>配置文件，找到&lt;code>“MountPoints”&lt;/code>关键字，在其中添加你想要挂载的目录，例如：
+原始内容：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="s2">&amp;#34;MountPoints&amp;#34;&lt;/span>&lt;span class="err">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;/etc/group&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Source&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;/etc/group&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Destination&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;/etc/group&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;RW&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">false&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Name&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Driver&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;bind&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Relabel&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;ro&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Propagation&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;rprivate&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Spec&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;bind&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Source&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;/etc/group&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Target&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;/etc/group&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;ReadOnly&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;SkipMountpointCreation&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">false&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>挂载宿主机目录&lt;code>/home/&amp;lt;USER&amp;gt;/Data/simulation&lt;/code>到容器目录&lt;code>/home/&amp;lt;USER&amp;gt;/calc&lt;/code>下：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;span class="lnt">24
+&lt;/span>&lt;span class="lnt">25
+&lt;/span>&lt;span class="lnt">26
+&lt;/span>&lt;span class="lnt">27
+&lt;/span>&lt;span class="lnt">28
+&lt;/span>&lt;span class="lnt">29
+&lt;/span>&lt;span class="lnt">30
+&lt;/span>&lt;span class="lnt">31
+&lt;/span>&lt;span class="lnt">32
+&lt;/span>&lt;span class="lnt">33
+&lt;/span>&lt;span class="lnt">34
+&lt;/span>&lt;span class="lnt">35
+&lt;/span>&lt;span class="lnt">36
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="s2">&amp;#34;MountPoints&amp;#34;&lt;/span>&lt;span class="err">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;/etc/group&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Source&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;/etc/group&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Destination&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;/etc/group&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;RW&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">false&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Name&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Driver&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;bind&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Relabel&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;ro&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Propagation&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;rprivate&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Spec&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;bind&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Source&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;/etc/group&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Target&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;/etc/group&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;ReadOnly&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;SkipMountpointCreation&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">false&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;/home/&amp;lt;USER&amp;gt;/calc&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Source&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;/home/&amp;lt;USER&amp;gt;/Data/simulation&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Destination&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;/home/&amp;lt;USER&amp;gt;/calc&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;RW&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">false&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Name&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Driver&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;bind&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Relabel&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;ro&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Propagation&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;rprivate&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Spec&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Type&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;bind&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Source&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;/home/&amp;lt;USER&amp;gt;/Data/simulation&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;Target&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;/home/&amp;lt;USER&amp;gt;/calc&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;ReadOnly&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;SkipMountpointCreation&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">false&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>重启docker服务：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">systemctl start docker.service
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>进入容器：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">docker start &amp;lt;YOUR_CONTAINER_ID&amp;gt;
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol></description></item><item><title>ICEMCFD 18.0/19.0 start problem in UBUNTU 18.04</title><link>https://TimoLin.github.io/p/icemcfd-18.0/19.0-start-problem-in-ubuntu-18.04/</link><pubDate>Wed, 26 Sep 2018 00:00:00 +0000</pubDate><guid>https://TimoLin.github.io/p/icemcfd-18.0/19.0-start-problem-in-ubuntu-18.04/</guid><description>&lt;p>Check my post in &lt;a class="link" href="https://www.cfd-online.com/Forums/ansys/203041-installation-ansys-19-ubuntu-18-4-a.html#6" target="_blank" rel="noopener"
+>cfd-online&lt;/a>&lt;br>
+At August, I upgraded my UBUNTU 16.04 to 18.04. This version is great.&lt;br>
+However, I met a problem when starting ICEMCFD 18.0 and 19.0.&lt;br>
+I check the start script file of icemcfd at &amp;ldquo;ansys_inc/v191/icemcfd/linux64_amd/bin&amp;rdquo;. There are two solutions:&lt;/p>
+&lt;h2 id="solution-1">Solution 1
+&lt;/h2>&lt;p>If you don&amp;rsquo;t want to change the icemcfd start script, just run the following command:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">icemcfd -log tmp.log
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>-log is a icemcfd argument, tmp.log is the log file generated at your pwd.&lt;/p>
+&lt;h2 id="solution-2">Solution 2
+&lt;/h2>&lt;p>If you use other argument when you start icemcfd, the following solution may be not very good. (I don&amp;rsquo;t use arguments when start icemcfd, so it works well for me)
+First- cd to your icemcfd bin dir:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> /usr/ansys_inc/v191/icemcfd/linux64_amd/bin
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Then: edit the icemcfd shell script by any text editor you want, here we use gvim:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">gvim icemcfd
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>change line 607:
+from
+&lt;code>eval &amp;quot;$ICEM_ACN/bin/med&amp;quot; &amp;quot;$args&amp;quot;&lt;/code>
+to
+&lt;code>&amp;quot;$ICEM_ACN/bin/med&amp;quot; $args&lt;/code> or &lt;code>$ICEM_ACN/bin/med&lt;/code>&lt;/p></description></item></channel></rss>

@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CentOS on TimoLin's Blog</title><link>https://TimoLin.github.io/tags/centos/</link><description>Recent content in CentOS on TimoLin's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-Hans</language><lastBuildDate>Tue, 09 Jan 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://TimoLin.github.io/tags/centos/index.xml" rel="self" type="application/rss+xml"/><item><title>Linux下Ansys安装与运行的常见问题</title><link>https://TimoLin.github.io/p/linux%E4%B8%8Bansys%E5%AE%89%E8%A3%85%E4%B8%8E%E8%BF%90%E8%A1%8C%E7%9A%84%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/</link><pubDate>Tue, 09 Jan 2024 00:00:00 +0000</pubDate><guid>https://TimoLin.github.io/p/linux%E4%B8%8Bansys%E5%AE%89%E8%A3%85%E4%B8%8E%E8%BF%90%E8%A1%8C%E7%9A%84%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/</guid><description>&lt;img src="https://TimoLin.github.io/p/linux%E4%B8%8Bansys%E5%AE%89%E8%A3%85%E4%B8%8E%E8%BF%90%E8%A1%8C%E7%9A%84%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/cover.png" alt="Featured image of post Linux下Ansys安装与运行的常见问题" />&lt;h2 id="1-打开fluenticem出现许可证错误">1. 打开Fluent/ICEM出现许可证错误
+&lt;/h2>&lt;ul>
+&lt;li>版本：22R1&lt;/li>
+&lt;li>权限：root安装至&lt;code>/usr/ansys_inc&lt;/code>，普通用户使用&lt;/li>
+&lt;li>系统：CentOS 7&lt;/li>
+&lt;/ul>
+&lt;p>查看对应的日志文件 &lt;code>~/.ansys/ansyscl.localhost.*.log&lt;/code>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 INFO ANSYSLI_CMD=/usr/ansys_inc/v221/licensingclient/linx64/ansyscl -acl 19510.29709 -nodaemon -log ~/.ansys/ansyscl.localhost.19510.29709.log
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 INFO ANSYSLI_INITIALIZATION_FILE=&amp;#39;/usr/ansys_inc/shared_files/licensing/ansyslmd.ini&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 INFO ANSYSLI_PRODORD_FILE=&amp;#39;/usr/ansys_inc/shared_files/licensing/prodord/ansysli.prodord.xml&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 INFO ANSYSLI_TIMEOUT_FLEXLM=15
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 ERROR /usr/ansys_inc/shared_files/licensing/ansyslmd.ini is invalid.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Could not read option file /usr/ansys_inc/shared_files/licensing/ansyslmd.ini.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 ERROR Exiting.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>发现Ansys的许可证管理器无法正确读取配置文件，排除&lt;code>shared_files&lt;/code>下的文件不存在等弱智原因后，可能和文件夹的权限有关系：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 查看文件权限信息&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ls -lht /usr/ansys_inc/shared_files/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>输出如下，文件的所有权为root，是导致许可证无法读取的原因：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">drwxr-xr-x. 9 root root 159 May 12 2023 licensing
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x. 3 root root 20 Nov 13 2021 bin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x. 9 root root 112 Nov 13 2021 lib
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x. 3 root root 20 Nov 13 2021 syslib
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>修改文件夹所有权为普通用户，以解决许可证文件访问问题：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 进入root&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">su
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 修改权限&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">chown &lt;span class="nv">$USER&lt;/span> -R /usr/ansys_inc/shared_files
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>打开Fluent或ICEM，查看问题是否已解决。&lt;/p>
+&lt;h2 id="2-打开icem报错">2. 打开ICEM报错
+&lt;/h2>&lt;p>终端输入&lt;code>icemcfd&lt;/code>，报错如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">ICEM_ACN&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="s2">&amp;#34;/usr/ansys_inc/v221/icemcfd/linux64_amd&amp;#34;&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">LD_LIBRARY_PATH&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="s2">&amp;#34;/usr/ansys_inc/v221/icemcfd/linux64_amd/lib:/usr/ansys_inc/v221/icemcfd/linux64_amd/bin:/usr/ansys_inc/v221/icemcfd/linux64_amd/dif/iges:/usr/ansys_inc/v221/icemcfd/linux64_amd/../../Framework/bin/Linux64:/usr/ansys_inc/v221/icemcfd/linux64_amd/../../tp/IntelCompiler/2019.3.199/linx64/lib/intel64:/usr/ansys_inc/v221/icemcfd/linux64_amd/../../tp/qt_fw/5.9.6/Linux64/lib:/usr/ansys_inc/v221/icemcfd/linux64_amd/../../tp/hdf5/1_10_5/linx64/lib&amp;#34;&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">args&lt;/span> &lt;span class="o">=&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Window&lt;/span> &lt;span class="n">information&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">depth&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">24&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">class&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">4&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">visual&lt;/span> &lt;span class="n">depth&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">24&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">4&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">can&lt;/span>&lt;span class="s1">&amp;#39;t load font screen14, using variable&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Signal&lt;/span> &lt;span class="mi">11&lt;/span> &lt;span class="n">caught&lt;/span>&lt;span class="o">!&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">segmentation&lt;/span> &lt;span class="n">violation&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">exiting&lt;/span> &lt;span class="n">after&lt;/span> &lt;span class="n">doing&lt;/span> &lt;span class="n">an&lt;/span> &lt;span class="n">emergency&lt;/span> &lt;span class="n">save&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Exiting&lt;/span>&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Exit&lt;/span> &lt;span class="n">from&lt;/span> &lt;span class="n">ICEM&lt;/span> &lt;span class="n">CFD&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>解决方案，&lt;a class="link" href="" >安装对应的字体文件&lt;/a>：&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://thelinuxcluster.com/2020/09/30/fixing-cant-load-screen14-issues-for-ansys-2020-r1/" target="_blank" rel="noopener"
+>CentOS&lt;/a>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">yum install xorg-x11-fonts-*
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.cfd-online.com/Forums/ansys-meshing/89147-error-when-starting-icem-cfd-ubuntu.html" target="_blank" rel="noopener"
+>Ubuntu&lt;/a>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">apt-get install xfonts-75dpi xfonts-100dpi
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;h2 id="3-ubuntu打开fluent报错">3. Ubuntu打开Fluent报错
+&lt;/h2>&lt;p>通常发生在新系统上第一次安装Ansys后，报错如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/bin/fluent: 69: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/bin/fluent: 813: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/bin/fluent: 836: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/bin/fluent: 838: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/fluent22.1.0/bin/fluent -r22.1.0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/fluent22.1.0/bin/fluent: 112: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/fluent22.1.0/bin/fluent: 744: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/fluent22.1.0/bin/fluent: 1108: [[: not found
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Ubuntu默认使用dash，确实一些shell特性，需要将其修改为bash：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 运行下面的命令，并在弹出的窗口中选择No&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo dpkg-reconfigure dash
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="4-ansys-23r1许可证管理器-get-system-hostid-information报错">4. Ansys 23R1许可证管理器 Get System HostID Information报错
+&lt;/h2>&lt;p>提示&lt;code>lmutil&lt;/code>文件不存在，但是实际是有这个文件：&lt;/p>
+&lt;ul>
+&lt;li>CentOS 7.6
+手动运行&lt;code>lmutil&lt;/code>，报错如下：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">/lib64/ld-lsb-x86-64.so.3: bad ELF interpreter: No such file or directory
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;a class="link" href="https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/Lmutil-error-lib64ld-lsb-x86-64-so-3-bad-ELF-interpreter.html" target="_blank" rel="noopener"
+>解决方案&lt;/a>：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">yum install redhat-lsb
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>Ubuntu 22.04
+&lt;a class="link" href="https://www.bilibili.com/read/cv27369082/" target="_blank" rel="noopener"
+>参考&lt;/a>：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo ln -s /lib64/ld-linux-x86-64.so.2 /lib64/ld-lsb-x86-64.so.3
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul></description></item><item><title>CentOS下Miniconda导致VNC无法启动的解决方案</title><link>https://TimoLin.github.io/p/centos%E4%B8%8Bminiconda%E5%AF%BC%E8%87%B4vnc%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</link><pubDate>Wed, 25 Oct 2023 00:00:00 +0000</pubDate><guid>https://TimoLin.github.io/p/centos%E4%B8%8Bminiconda%E5%AF%BC%E8%87%B4vnc%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</guid><description>&lt;img src="https://TimoLin.github.io/p/centos%E4%B8%8Bminiconda%E5%AF%BC%E8%87%B4vnc%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/cover.png" alt="Featured image of post CentOS下Miniconda导致VNC无法启动的解决方案" />&lt;p>参考博文&lt;a class="link" href="https://www.cnblogs.com/kevingrace/p/5821450.html" target="_blank" rel="noopener"
+>CentOS7.2 部署VNC服务记录&lt;/a>。&lt;/p>
+&lt;h2 id="问题描述">问题描述
+&lt;/h2>&lt;p>首先在&lt;code>CentOS-7.9&lt;/code>中安装了&lt;code>tigervnc&lt;/code>，并配置好了&lt;code>vncserver&lt;/code>的自启动服务：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-service" data-lang="service">&lt;span class="line">&lt;span class="cl">&lt;span class="k">[Unit]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">Description&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">Remote desktop service (VNC)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">After&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">syslog.target network.target&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">[Service]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">Type&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">simple&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Clean any existing files in /tmp/.X11-unix environment&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">ExecStartPre&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">/bin/sh -c &amp;#39;/usr/bin/vncserver -kill %i &amp;gt; /dev/null 2&amp;gt;&amp;amp;1 || :&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">ExecStart&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">/usr/sbin/runuser -l userTest -c &amp;#34;/usr/bin/vncserver %i -geometry 1440x900&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">ExecStop&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">/bin/sh -c &amp;#39;/usr/bin/vncserver -kill %i &amp;gt; /dev/null 2&amp;gt;&amp;amp;1 || :&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">[Install]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">WantedBy&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">multi-user.target&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在未安装Miniconda环境之前，是可以正常启动的，包括重启系统后自启动，或者使用&lt;code>systemctl start/restart vncserver@\:1.service&lt;/code>进行手动启动/重启。&lt;/p>
+&lt;p>安装Miniconda后，在普通用户&lt;code>userTest&lt;/code>的&lt;code>.bashrc&lt;/code>中会自动添加如下代码自动激活conda环境：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">__conda_setup&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;$(&amp;#39;/home/nuaa/miniconda3/bin/conda&amp;#39; &amp;#39;shell.bash&amp;#39; &amp;#39;hook&amp;#39; 2&amp;gt; /dev/null)&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="o">$&lt;/span>&lt;span class="err">?&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">eq&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="p">];&lt;/span> &lt;span class="n">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">eval&lt;/span> &lt;span class="s2">&amp;#34;$__conda_setup&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">f&lt;/span> &lt;span class="s2">&amp;#34;/home/nuaa/miniconda3/etc/profile.d/conda.sh&amp;#34;&lt;/span> &lt;span class="p">];&lt;/span> &lt;span class="n">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">.&lt;/span> &lt;span class="s2">&amp;#34;/home/nuaa/miniconda3/etc/profile.d/conda.sh&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">export&lt;/span> &lt;span class="n">PATH&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;/home/nuaa/miniconda3/bin:$PATH&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">unset&lt;/span> &lt;span class="n">__conda_setup&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># &amp;lt;&amp;lt;&amp;lt; conda initialize &amp;lt;&amp;lt;&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>然后，&lt;code>vncserver&lt;/code>服务就无法开机自启动或者使用&lt;code>systemctl&lt;/code>启动了，具体报错如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">imsettings&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">check&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">31898&lt;/span>&lt;span class="p">):&lt;/span> &lt;span class="n">GLib&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">GIO&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">CRITICAL&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">21&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">56&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mf">03.842&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">g_dbus_proxy_call_sync_internal&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">assertion&lt;/span> &lt;span class="s1">&amp;#39;G_IS_DBUS_PROXY (proxy)&amp;#39;&lt;/span> &lt;span class="n">failed&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">GLib&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">GIO&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">Message&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">21&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">56&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mf">03.854&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">Using&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="s1">&amp;#39;memory&amp;#39;&lt;/span> &lt;span class="n">GSettings&lt;/span> &lt;span class="n">backend&lt;/span>&lt;span class="o">.&lt;/span> &lt;span class="n">Your&lt;/span> &lt;span class="n">settings&lt;/span> &lt;span class="n">will&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="n">be&lt;/span> &lt;span class="n">saved&lt;/span> &lt;span class="ow">or&lt;/span> &lt;span class="n">shared&lt;/span> &lt;span class="n">with&lt;/span> &lt;span class="n">other&lt;/span> &lt;span class="n">applications&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">**&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">process&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">31798&lt;/span>&lt;span class="p">):&lt;/span> &lt;span class="n">WARNING&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">21&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">56&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mf">03.861&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">Could&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="n">make&lt;/span> &lt;span class="n">bus&lt;/span> &lt;span class="n">activated&lt;/span> &lt;span class="n">clients&lt;/span> &lt;span class="n">aware&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="n">XDG_CURRENT_DESKTOP&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">GNOME&lt;/span> &lt;span class="n">environment&lt;/span> &lt;span class="n">variable&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Could&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="n">connect&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">Connection&lt;/span> &lt;span class="n">refused&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="原因">原因
+&lt;/h2>&lt;p>Miniconda环境下的&lt;code>dbus-daemon&lt;/code>与CentOS系统中的&lt;code>dubs-daemon&lt;/code>存在冲突：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">$ which dbus-daemon
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">~/miniconda3/bin/dbus-daemon
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="解决方案">解决方案
+&lt;/h2>&lt;p>避免普通用户&lt;code>userTest&lt;/code>下Miniconda环境的自动加载，将自动加载环境的代码修改为下面的bash函数形式，需要使用miniconda环境时，运行&lt;code>miniconda&lt;/code>来激活环境：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">miniconda&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">__conda_setup&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;$(&amp;#39;/home/nuaa/miniconda3/bin/conda&amp;#39; &amp;#39;shell.bash&amp;#39; &amp;#39;hook&amp;#39; 2&amp;gt; /dev/null)&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="o">$&lt;/span>&lt;span class="err">?&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">eq&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="p">];&lt;/span> &lt;span class="n">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">eval&lt;/span> &lt;span class="s2">&amp;#34;$__conda_setup&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">f&lt;/span> &lt;span class="s2">&amp;#34;/home/nuaa/miniconda3/etc/profile.d/conda.sh&amp;#34;&lt;/span> &lt;span class="p">];&lt;/span> &lt;span class="n">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">.&lt;/span> &lt;span class="s2">&amp;#34;/home/nuaa/miniconda3/etc/profile.d/conda.sh&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">export&lt;/span> &lt;span class="n">PATH&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;/home/nuaa/miniconda3/bin:$PATH&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">unset&lt;/span> &lt;span class="n">__conda_setup&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># &amp;lt;&amp;lt;&amp;lt; conda initialize &amp;lt;&amp;lt;&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>重启vncserver服务或者重启系统：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">systemctl stop vncserver@&lt;span class="se">\:&lt;/span>1.service
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">systemctl start vncserver@&lt;span class="se">\:&lt;/span>1.service
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="vnc无法登录的一个解决方法">VNC无法登录的一个解决方法
+&lt;/h2>&lt;p>有时在CentoOS登录界面输入密码无效，多次输入密码错误后卡住，或者无法登录，可能是VNC桌面卡死了。&lt;/p>
+&lt;ul>
+&lt;li>方法1: 重启VNC
+SSH登录到目标机器，重启VNC的系统服务。但该方法会使得VNC桌面中的任务随之杀掉。
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">systemctl stop vncserver@&lt;span class="se">\:&lt;/span>1.service
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">systemctl start vncserver@&lt;span class="se">\:&lt;/span>1.service
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>方法2： loginctl解锁桌面（参考&lt;a class="link" href="https://zhuanlan.zhihu.com/p/507878402" target="_blank" rel="noopener"
+>博文&lt;/a>）
+首先查看当前登录了
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">loginctl list-sessions
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>输出如下：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">SESSION UID USER SEAT
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> c1 1000 YOUR_USER_NAME
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> c2 42 gdm seat0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 20210 1000 YOUR_USER_NAME
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">3 sessions listed.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>解锁VNC登录界面：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 一般VNC的session id可能是数字或者c1，尝试下述命令&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">loginctl unlock-session &lt;span class="m">20210&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">或
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">loginctl unlock-session c1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul></description></item></channel></rss>

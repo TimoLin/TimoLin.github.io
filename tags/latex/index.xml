@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>LaTeX on TimoLin's Blog</title><link>https://TimoLin.github.io/tags/latex/</link><description>Recent content in LaTeX on TimoLin's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-Hans</language><lastBuildDate>Thu, 01 Feb 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://TimoLin.github.io/tags/latex/index.xml" rel="self" type="application/rss+xml"/><item><title>GVIM下的LaTeX编译实时预览</title><link>https://TimoLin.github.io/p/gvim%E4%B8%8B%E7%9A%84latex%E7%BC%96%E8%AF%91%E5%AE%9E%E6%97%B6%E9%A2%84%E8%A7%88/</link><pubDate>Thu, 01 Feb 2024 00:00:00 +0000</pubDate><guid>https://TimoLin.github.io/p/gvim%E4%B8%8B%E7%9A%84latex%E7%BC%96%E8%AF%91%E5%AE%9E%E6%97%B6%E9%A2%84%E8%A7%88/</guid><description>&lt;img src="https://TimoLin.github.io/p/gvim%E4%B8%8B%E7%9A%84latex%E7%BC%96%E8%AF%91%E5%AE%9E%E6%97%B6%E9%A2%84%E8%A7%88/cover.png" alt="Featured image of post GVIM下的LaTeX编译实时预览" />&lt;h2 id="说明">说明
+&lt;/h2>&lt;ul>
+&lt;li>编辑器：GVIM-9.0&lt;/li>
+&lt;li>LaTeX插件：&lt;a class="link" href="https://github.com/lervag/vimtex" target="_blank" rel="noopener"
+>vim-tex&lt;/a>或者&lt;a class="link" href="https://github.com/vim-latex/vim-latex" target="_blank" rel="noopener"
+>vim-latex&lt;/a>&lt;/li>
+&lt;li>PDF阅读器：&lt;a class="link" href="https://okular.kde.org/" target="_blank" rel="noopener"
+>Okular&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;p>本方案参考了&lt;a class="link" href="https://tex.stackexchange.com/a/531555" target="_blank" rel="noopener"
+>StackExchange Answer&lt;/a>&lt;/p>
+&lt;h2 id="1-latex编译时打开synctex支持">1. LaTeX编译时打开SyncTeX支持
+&lt;/h2>&lt;p>编译时打开SyncTeX支持才能够在tex与PDF之间进行跳转。
+例如使用&lt;code>pdflatex&lt;/code>时：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">pdflatex -synctex&lt;span class="o">=&lt;/span>&lt;span class="m">1&lt;/span> file.tex
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>或者使用&lt;code>latexmk&lt;/code>时：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">latexmk -xelatex -synctex=1 file.tex
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>上述选项会生成一个&lt;code>file.synctex.gz&lt;/code>文件。&lt;/p>
+&lt;h2 id="2-tex源码定位到pdftex-to-pdf">2. Tex源码定位到PDF（Tex-to-PDF）
+&lt;/h2>&lt;p>Okular支持打开PDF时指定到行位置，将下面的函数添加到&lt;code>~/.vimrc&lt;/code>中：&lt;/p>
+&lt;p>对于&lt;code>vim-tex&lt;/code>插件：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-vimrc" data-lang="vimrc">&lt;span class="line">&lt;span class="cl">&lt;span class="k">function&lt;/span>&lt;span class="p">!&lt;/span> &lt;span class="nx">OkularFind&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">this_tex_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">expand&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;%:p&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">master_tex_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">b&lt;/span>:&lt;span class="nx">vimtex&lt;/span>.&lt;span class="nx">tex&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">pdf_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">fnamemodify&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">master_tex_file&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;:p:r&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> . &lt;span class="s1">&amp;#39;.pdf&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">line_number&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">line&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;.&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">okular_cmd&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s1">&amp;#39;okular --noraise --unique &amp;#34;&amp;#39;&lt;/span> . &lt;span class="nx">pdf_file&lt;/span> . &lt;span class="s1">&amp;#39;#src:&amp;#39;&lt;/span> . &lt;span class="nx">line_number&lt;/span> . &lt;span class="s1">&amp;#39; &amp;#39;&lt;/span> . &lt;span class="nx">this_tex_file&lt;/span> . &lt;span class="s1">&amp;#39;&amp;#34;&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">s&lt;/span>:&lt;span class="nx">okular_job&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">job_start&lt;/span>&lt;span class="p">(&lt;/span>[&lt;span class="s1">&amp;#39;/bin/bash&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;-c&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">okular_cmd&lt;/span>]&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">endfunction&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">nnoremap&lt;/span> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nx">leader&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>&lt;span class="nx">f&lt;/span> :&lt;span class="nx">call&lt;/span> &lt;span class="nx">OkularFind&lt;/span>&lt;span class="p">()&amp;lt;&lt;/span>&lt;span class="nx">cr&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>对于&lt;code>vim-latex&lt;/code>插件：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-vimrc" data-lang="vimrc">&lt;span class="line">&lt;span class="cl">&lt;span class="k">function&lt;/span>&lt;span class="p">!&lt;/span> &lt;span class="nx">OkularFind&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">this_tex_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">expand&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;%:p&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">master_tex_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">Tex_GetMainFileName&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">pdf_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">fnamemodify&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">master_tex_file&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;:p:r&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> . &lt;span class="s1">&amp;#39;.pdf&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">line_number&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">line&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;.&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">okular_cmd&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s1">&amp;#39;okular --noraise --unique &amp;#34;&amp;#39;&lt;/span> . &lt;span class="nx">pdf_file&lt;/span> . &lt;span class="s1">&amp;#39;#src:&amp;#39;&lt;/span> . &lt;span class="nx">line_number&lt;/span> . &lt;span class="s1">&amp;#39; &amp;#39;&lt;/span> . &lt;span class="nx">this_tex_file&lt;/span> . &lt;span class="s1">&amp;#39;&amp;#34;&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">s&lt;/span>:&lt;span class="nx">okular_job&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">job_start&lt;/span>&lt;span class="p">(&lt;/span>[&lt;span class="s1">&amp;#39;/bin/bash&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;-c&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">okular_cmd&lt;/span>]&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">endfunction&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">nnoremap&lt;/span> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nx">leader&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>&lt;span class="nx">f&lt;/span> :&lt;span class="nx">call&lt;/span> &lt;span class="nx">OkularFind&lt;/span>&lt;span class="p">()&amp;lt;&lt;/span>&lt;span class="nx">cr&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>其中，二者的区别是，对于多文件的项目如何找到Tex项目的主文件：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-vimrc" data-lang="vimrc">&lt;span class="line">&lt;span class="cl"># &lt;span class="nx">vim&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="nx">tex&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">let&lt;/span> &lt;span class="nx">master_tex_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">b&lt;/span>:&lt;span class="nx">vimtex&lt;/span>.&lt;span class="nx">tex&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># &lt;span class="nx">vim&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="nx">latex&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">let&lt;/span> &lt;span class="nx">master_tex_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">Tex_GetMainFileName&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在&lt;code>gvim&lt;/code>下将光标移动到想要预览的内容，通过&lt;code>\f&lt;/code>来打开&lt;code>Okular&lt;/code>并指定到要预览的内容。&lt;/p>
+&lt;h2 id="3-pdf定位到tex源码pdf-to-tex">3. PDF定位到Tex源码（PDF-To-Tex）
+&lt;/h2>&lt;p>在&lt;code>Okular&lt;/code>中设置以下：&lt;/p>
+&lt;ol>
+&lt;li>&lt;code>设置&lt;/code> - &lt;code>Settings&lt;/code>&lt;/li>
+&lt;li>&lt;code>配置Okular&lt;/code> - &lt;code>Configure Okular&lt;/code>&lt;/li>
+&lt;li>&lt;code>编辑器&lt;/code> - &lt;code>Editor&lt;/code>&lt;/li>
+&lt;li>&lt;code>选择自定义文本编辑器&lt;/code> - &lt;code>Custom Text Editor&lt;/code>&lt;/li>
+&lt;li>&lt;code>在命令框中填入下列命令&lt;/code> - &lt;code>Input the following command&lt;/code>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">gvim --remote +%l %f
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;p>在浏览模式下，使用快捷键&lt;code>Shift+鼠标左键&lt;/code>单击想要查看源码的内容，即可跳转到相应的Tex源码文件位置中。&lt;/p></description></item></channel></rss>

@@ -1,0 +1,958 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Linux on TimoLin's Blog</title><link>https://TimoLin.github.io/categories/linux/</link><description>Recent content in Linux on TimoLin's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-Hans</language><lastBuildDate>Wed, 27 Mar 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://TimoLin.github.io/categories/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>Paraview中垂直放置文本的一种方法</title><link>https://TimoLin.github.io/p/paraview%E4%B8%AD%E5%9E%82%E7%9B%B4%E6%94%BE%E7%BD%AE%E6%96%87%E6%9C%AC%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95/</link><pubDate>Wed, 27 Mar 2024 00:00:00 +0000</pubDate><guid>https://TimoLin.github.io/p/paraview%E4%B8%AD%E5%9E%82%E7%9B%B4%E6%94%BE%E7%BD%AE%E6%96%87%E6%9C%AC%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95/</guid><description>&lt;img src="https://TimoLin.github.io/p/paraview%E4%B8%AD%E5%9E%82%E7%9B%B4%E6%94%BE%E7%BD%AE%E6%96%87%E6%9C%AC%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95/cover.png" alt="Featured image of post Paraview中垂直放置文本的一种方法" />&lt;h2 id="需求">需求
+&lt;/h2>&lt;p>对于二维云图，Paraview中默认&lt;code>Y&lt;/code>轴的标题为横向文字（下图左），并且不支持旋转文字的方向，相关讨论可以在这些帖子中看到。&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://discourse.paraview.org/t/allow-rotation-of-axes-grid-title/9324" target="_blank" rel="noopener"
+>Paraview Allow rotation of axes grid title&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://discourse.paraview.org/t/rotate-the-text-filter/4528" target="_blank" rel="noopener"
+>Paraview Rotate the Text filter&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;p>但是有时为了图片更加美观，我们希望&lt;code>Y&lt;/code>轴的title是垂直放置的，如下图（右）所示。&lt;/p>
+&lt;p>&lt;img src="https://TimoLin.github.io/p/paraview%E4%B8%AD%E5%9E%82%E7%9B%B4%E6%94%BE%E7%BD%AE%E6%96%87%E6%9C%AC%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95/step0.jpg"
+width="898"
+height="746"
+srcset="https://TimoLin.github.io/p/paraview%E4%B8%AD%E5%9E%82%E7%9B%B4%E6%94%BE%E7%BD%AE%E6%96%87%E6%9C%AC%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95/step0_huf76c53663c12b835b02f0f0a15575290_341629_480x0_resize_q75_box.jpg 480w, https://TimoLin.github.io/p/paraview%E4%B8%AD%E5%9E%82%E7%9B%B4%E6%94%BE%E7%BD%AE%E6%96%87%E6%9C%AC%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95/step0_huf76c53663c12b835b02f0f0a15575290_341629_1024x0_resize_q75_box.jpg 1024w"
+loading="lazy"
+alt="示例云图效果"
+class="gallery-image"
+data-flex-grow="120"
+data-flex-basis="288px"
+>&lt;/p>
+&lt;p>这里有个教程：&lt;/p>
+&lt;div class="video-wrapper">
+&lt;iframe loading="lazy"
+src="https://www.youtube.com/embed/ZUt0I9XoW2Y"
+allowfullscreen
+title="YouTube Video"
+>
+&lt;/iframe>
+&lt;/div></description></item><item><title>跨平台剪贴板同步方案-CopyQ</title><link>https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/</link><pubDate>Sat, 16 Mar 2024 00:00:00 +0000</pubDate><guid>https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/</guid><description>&lt;img src="https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/cover.png" alt="Featured image of post 跨平台剪贴板同步方案-CopyQ" />&lt;h2 id="需求很简单">需求很简单
+&lt;/h2>&lt;ul>
+&lt;li>跨平台支持（Windows/Linux）&lt;/li>
+&lt;li>剪贴板同步（联网或局域网均可）&lt;/li>
+&lt;li>无需手动推送，复制到剪贴板后自动同步&lt;/li>
+&lt;/ul>
+&lt;p>但是试用了很多剪贴板管理工具，总是有各种各样的问题：&lt;/p>
+&lt;h3 id="1-dittohttpsgithubcomsabrogdenditto">(1) &lt;a class="link" href="https://github.com/sabrogden/Ditto" target="_blank" rel="noopener"
+>Ditto&lt;/a>
+&lt;/h3>&lt;ul>
+&lt;li>缺点： 只支持Windows&lt;/li>
+&lt;/ul>
+&lt;h3 id="2-barrierhttpsgithubcomdebaucheebarrier">(2) &lt;a class="link" href="https://github.com/debauchee/barrier" target="_blank" rel="noopener"
+>Barrier&lt;/a>
+&lt;/h3>&lt;ul>
+&lt;li>优点：日常用作虚拟KVM管理，支持剪贴板同步&lt;/li>
+&lt;li>缺点：同步功能总是会莫名失灵，不支持文件复制，复制图片等较大内容时（几百KB~几兆），会导致KVM十分卡顿&lt;/li>
+&lt;/ul>
+&lt;h3 id="3-kde-connecthttpsgithubcomdebaucheebarrier">(3) &lt;a class="link" href="https://github.com/debauchee/barrier" target="_blank" rel="noopener"
+>Kde-connect&lt;/a>
+&lt;/h3>&lt;ul>
+&lt;li>优点：多平台同步（Windows/Linux/MacOS/ios/Android），支持发送文件&lt;/li>
+&lt;li>缺点：Win10下使用会占用剪贴板，使得 Ctrl-C/V 失灵&lt;/li>
+&lt;/ul>
+&lt;h3 id="4-copyqhttpsgithubcomhlukcopyq">(4) &lt;a class="link" href="https://github.com/hluk/CopyQ" target="_blank" rel="noopener"
+>CopyQ&lt;/a>
+&lt;/h3>&lt;ul>
+&lt;li>优点：很棒，基本能满足我的使用需求&lt;/li>
+&lt;li>缺点：同步功能需要第三方软件（坚果云/Dropbox等）&lt;/li>
+&lt;/ul>
+&lt;h2 id="剪贴板管理工具-copyq">剪贴板管理工具-CopyQ
+&lt;/h2>&lt;p>这里只介绍同步功能的设置方法，其他功能请参考&lt;a class="link" href="https://copyq.readthedocs.io/en/latest/" target="_blank" rel="noopener"
+>官方文档&lt;/a>或网络资料。&lt;/p>
+&lt;h3 id="安装">安装
+&lt;/h3>&lt;ul>
+&lt;li>Ubuntu-22.04
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo add-apt-repository ppa:hluk/copyq
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt update
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt install copyq
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>Windows&lt;br>
+下载&lt;a class="link" href="https://github.com/hluk/CopyQ/releases" target="_blank" rel="noopener"
+>安装包CopyQ-&lt;em>.&lt;/em>-setup.exe&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h3 id="配置同步功能">配置同步功能
+&lt;/h3>&lt;p>同步功能是将剪贴板存储到指定的同步文件夹内， 因此需要使用第三方云盘同步软件，例如坚果云、Dropbox等有跨平台支持的云盘服务。&lt;/p>
+&lt;p>以&lt;code>Dropbox&lt;/code>为例，Ubuntu下Dropbox的同步文件夹位于&lt;code>/home/user/Dropbox&lt;/code>，Windows下位于&lt;code>D:\Dropbox&lt;/code>:&lt;/p>
+&lt;h4 id="ubuntu-2204">Ubuntu-22.04
+&lt;/h4>&lt;p>创建&lt;code>CopyQ&lt;/code>的同步文件夹&lt;code>/home/user/Dropbox/CopyQ&lt;/code>。
+打开CopyQ，查看&lt;code>文件&lt;/code>-&lt;code>首选项&lt;/code>-&lt;code>标签&lt;/code>：&lt;/p>
+&lt;p>&lt;img src="https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-linux-1.png"
+width="830"
+height="447"
+srcset="https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-linux-1_hu19a7986583835529befe0daf1cbd872b_40266_480x0_resize_box_3.png 480w, https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-linux-1_hu19a7986583835529befe0daf1cbd872b_40266_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="tab"
+class="gallery-image"
+data-flex-grow="185"
+data-flex-basis="445px"
+>&lt;/p>
+&lt;p>默认剪贴板存放在&lt;code>&amp;amp;clipboard&lt;/code>标签页下。
+设置&lt;code>文件&lt;/code>-&lt;code>首选项&lt;/code>-&lt;code>条目&lt;/code>-&lt;code>同步&lt;/code>， 标签页设置为上图中的标签&lt;code>&amp;amp;clipboard&lt;/code>，文件夹路径设置为刚刚创建的同步文件夹&lt;code>/home/user/Dropbox/CopyQ&lt;/code>，点击&lt;code>应用&lt;/code>。&lt;/p>
+&lt;p>设置完成。
+&lt;img src="https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-linux-2.png"
+width="1049"
+height="630"
+srcset="https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-linux-2_hu0c4ac9058c92b79ebe1feb4414404028_120309_480x0_resize_box_3.png 480w, https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-linux-2_hu0c4ac9058c92b79ebe1feb4414404028_120309_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="sync"
+class="gallery-image"
+data-flex-grow="166"
+data-flex-basis="399px"
+>&lt;/p>
+&lt;h4 id="windows">Windows
+&lt;/h4>&lt;p>设置方法相同，但是要注意Windows下默认的标签为&lt;code>剪贴板(&amp;amp;C)&lt;/code>：
+&lt;img src="https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-windows-1.png"
+width="678"
+height="524"
+srcset="https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-windows-1_hu2aff7f69b592162d1a9e827af4bd62c7_51571_480x0_resize_box_3.png 480w, https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-windows-1_hu2aff7f69b592162d1a9e827af4bd62c7_51571_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="windows"
+class="gallery-image"
+data-flex-grow="129"
+data-flex-basis="310px"
+>&lt;/p>
+&lt;p>复制任意文字或图片后，可以看到同步文件夹下生成的&lt;code>copyq_&amp;lt;timestamp&amp;gt;.*&lt;/code>文件，经由Dropbox自动同步到Windows端。
+&lt;img src="https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-linux-3.png"
+width="1263"
+height="518"
+srcset="https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-linux-3_hu650dc735a4291909c9de2c92e17add7f_91442_480x0_resize_box_3.png 480w, https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-linux-3_hu650dc735a4291909c9de2c92e17add7f_91442_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="sync-clipboard"
+class="gallery-image"
+data-flex-grow="243"
+data-flex-basis="585px"
+>&lt;/p></description></item><item><title>GVIM下的LaTeX编译实时预览</title><link>https://TimoLin.github.io/p/gvim%E4%B8%8B%E7%9A%84latex%E7%BC%96%E8%AF%91%E5%AE%9E%E6%97%B6%E9%A2%84%E8%A7%88/</link><pubDate>Thu, 01 Feb 2024 00:00:00 +0000</pubDate><guid>https://TimoLin.github.io/p/gvim%E4%B8%8B%E7%9A%84latex%E7%BC%96%E8%AF%91%E5%AE%9E%E6%97%B6%E9%A2%84%E8%A7%88/</guid><description>&lt;img src="https://TimoLin.github.io/p/gvim%E4%B8%8B%E7%9A%84latex%E7%BC%96%E8%AF%91%E5%AE%9E%E6%97%B6%E9%A2%84%E8%A7%88/cover.png" alt="Featured image of post GVIM下的LaTeX编译实时预览" />&lt;h2 id="说明">说明
+&lt;/h2>&lt;ul>
+&lt;li>编辑器：GVIM-9.0&lt;/li>
+&lt;li>LaTeX插件：&lt;a class="link" href="https://github.com/lervag/vimtex" target="_blank" rel="noopener"
+>vim-tex&lt;/a>或者&lt;a class="link" href="https://github.com/vim-latex/vim-latex" target="_blank" rel="noopener"
+>vim-latex&lt;/a>&lt;/li>
+&lt;li>PDF阅读器：&lt;a class="link" href="https://okular.kde.org/" target="_blank" rel="noopener"
+>Okular&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;p>本方案参考了&lt;a class="link" href="https://tex.stackexchange.com/a/531555" target="_blank" rel="noopener"
+>StackExchange Answer&lt;/a>&lt;/p>
+&lt;h2 id="1-latex编译时打开synctex支持">1. LaTeX编译时打开SyncTeX支持
+&lt;/h2>&lt;p>编译时打开SyncTeX支持才能够在tex与PDF之间进行跳转。
+例如使用&lt;code>pdflatex&lt;/code>时：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">pdflatex -synctex&lt;span class="o">=&lt;/span>&lt;span class="m">1&lt;/span> file.tex
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>或者使用&lt;code>latexmk&lt;/code>时：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">latexmk -xelatex -synctex=1 file.tex
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>上述选项会生成一个&lt;code>file.synctex.gz&lt;/code>文件。&lt;/p>
+&lt;h2 id="2-tex源码定位到pdftex-to-pdf">2. Tex源码定位到PDF（Tex-to-PDF）
+&lt;/h2>&lt;p>Okular支持打开PDF时指定到行位置，将下面的函数添加到&lt;code>~/.vimrc&lt;/code>中：&lt;/p>
+&lt;p>对于&lt;code>vim-tex&lt;/code>插件：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-vimrc" data-lang="vimrc">&lt;span class="line">&lt;span class="cl">&lt;span class="k">function&lt;/span>&lt;span class="p">!&lt;/span> &lt;span class="nx">OkularFind&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">this_tex_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">expand&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;%:p&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">master_tex_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">b&lt;/span>:&lt;span class="nx">vimtex&lt;/span>.&lt;span class="nx">tex&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">pdf_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">fnamemodify&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">master_tex_file&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;:p:r&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> . &lt;span class="s1">&amp;#39;.pdf&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">line_number&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">line&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;.&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">okular_cmd&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s1">&amp;#39;okular --noraise --unique &amp;#34;&amp;#39;&lt;/span> . &lt;span class="nx">pdf_file&lt;/span> . &lt;span class="s1">&amp;#39;#src:&amp;#39;&lt;/span> . &lt;span class="nx">line_number&lt;/span> . &lt;span class="s1">&amp;#39; &amp;#39;&lt;/span> . &lt;span class="nx">this_tex_file&lt;/span> . &lt;span class="s1">&amp;#39;&amp;#34;&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">s&lt;/span>:&lt;span class="nx">okular_job&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">job_start&lt;/span>&lt;span class="p">(&lt;/span>[&lt;span class="s1">&amp;#39;/bin/bash&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;-c&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">okular_cmd&lt;/span>]&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">endfunction&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">nnoremap&lt;/span> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nx">leader&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>&lt;span class="nx">f&lt;/span> :&lt;span class="nx">call&lt;/span> &lt;span class="nx">OkularFind&lt;/span>&lt;span class="p">()&amp;lt;&lt;/span>&lt;span class="nx">cr&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>对于&lt;code>vim-latex&lt;/code>插件：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;span class="lnt">9
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-vimrc" data-lang="vimrc">&lt;span class="line">&lt;span class="cl">&lt;span class="k">function&lt;/span>&lt;span class="p">!&lt;/span> &lt;span class="nx">OkularFind&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">this_tex_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">expand&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;%:p&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">master_tex_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">Tex_GetMainFileName&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">pdf_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">fnamemodify&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="nx">master_tex_file&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;:p:r&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span> . &lt;span class="s1">&amp;#39;.pdf&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">line_number&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">line&lt;/span>&lt;span class="p">(&lt;/span>&lt;span class="s1">&amp;#39;.&amp;#39;&lt;/span>&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">okular_cmd&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="s1">&amp;#39;okular --noraise --unique &amp;#34;&amp;#39;&lt;/span> . &lt;span class="nx">pdf_file&lt;/span> . &lt;span class="s1">&amp;#39;#src:&amp;#39;&lt;/span> . &lt;span class="nx">line_number&lt;/span> . &lt;span class="s1">&amp;#39; &amp;#39;&lt;/span> . &lt;span class="nx">this_tex_file&lt;/span> . &lt;span class="s1">&amp;#39;&amp;#34;&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">let&lt;/span> &lt;span class="nx">s&lt;/span>:&lt;span class="nx">okular_job&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">job_start&lt;/span>&lt;span class="p">(&lt;/span>[&lt;span class="s1">&amp;#39;/bin/bash&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s1">&amp;#39;-c&amp;#39;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="nx">okular_cmd&lt;/span>]&lt;span class="p">)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">endfunction&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="nx">nnoremap&lt;/span> &lt;span class="p">&amp;lt;&lt;/span>&lt;span class="nx">leader&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>&lt;span class="nx">f&lt;/span> :&lt;span class="nx">call&lt;/span> &lt;span class="nx">OkularFind&lt;/span>&lt;span class="p">()&amp;lt;&lt;/span>&lt;span class="nx">cr&lt;/span>&lt;span class="p">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>其中，二者的区别是，对于多文件的项目如何找到Tex项目的主文件：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-vimrc" data-lang="vimrc">&lt;span class="line">&lt;span class="cl"># &lt;span class="nx">vim&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="nx">tex&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">let&lt;/span> &lt;span class="nx">master_tex_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">b&lt;/span>:&lt;span class="nx">vimtex&lt;/span>.&lt;span class="nx">tex&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"># &lt;span class="nx">vim&lt;/span>&lt;span class="p">-&lt;/span>&lt;span class="nx">latex&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">let&lt;/span> &lt;span class="nx">master_tex_file&lt;/span> &lt;span class="p">=&lt;/span> &lt;span class="nx">Tex_GetMainFileName&lt;/span>&lt;span class="p">()&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在&lt;code>gvim&lt;/code>下将光标移动到想要预览的内容，通过&lt;code>\f&lt;/code>来打开&lt;code>Okular&lt;/code>并指定到要预览的内容。&lt;/p>
+&lt;h2 id="3-pdf定位到tex源码pdf-to-tex">3. PDF定位到Tex源码（PDF-To-Tex）
+&lt;/h2>&lt;p>在&lt;code>Okular&lt;/code>中设置以下：&lt;/p>
+&lt;ol>
+&lt;li>&lt;code>设置&lt;/code> - &lt;code>Settings&lt;/code>&lt;/li>
+&lt;li>&lt;code>配置Okular&lt;/code> - &lt;code>Configure Okular&lt;/code>&lt;/li>
+&lt;li>&lt;code>编辑器&lt;/code> - &lt;code>Editor&lt;/code>&lt;/li>
+&lt;li>&lt;code>选择自定义文本编辑器&lt;/code> - &lt;code>Custom Text Editor&lt;/code>&lt;/li>
+&lt;li>&lt;code>在命令框中填入下列命令&lt;/code> - &lt;code>Input the following command&lt;/code>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">gvim --remote +%l %f
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;p>在浏览模式下，使用快捷键&lt;code>Shift+鼠标左键&lt;/code>单击想要查看源码的内容，即可跳转到相应的Tex源码文件位置中。&lt;/p></description></item><item><title>Linux下Ansys安装与运行的常见问题</title><link>https://TimoLin.github.io/p/linux%E4%B8%8Bansys%E5%AE%89%E8%A3%85%E4%B8%8E%E8%BF%90%E8%A1%8C%E7%9A%84%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/</link><pubDate>Tue, 09 Jan 2024 00:00:00 +0000</pubDate><guid>https://TimoLin.github.io/p/linux%E4%B8%8Bansys%E5%AE%89%E8%A3%85%E4%B8%8E%E8%BF%90%E8%A1%8C%E7%9A%84%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/</guid><description>&lt;img src="https://TimoLin.github.io/p/linux%E4%B8%8Bansys%E5%AE%89%E8%A3%85%E4%B8%8E%E8%BF%90%E8%A1%8C%E7%9A%84%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/cover.png" alt="Featured image of post Linux下Ansys安装与运行的常见问题" />&lt;h2 id="1-打开fluenticem出现许可证错误">1. 打开Fluent/ICEM出现许可证错误
+&lt;/h2>&lt;ul>
+&lt;li>版本：22R1&lt;/li>
+&lt;li>权限：root安装至&lt;code>/usr/ansys_inc&lt;/code>，普通用户使用&lt;/li>
+&lt;li>系统：CentOS 7&lt;/li>
+&lt;/ul>
+&lt;p>查看对应的日志文件 &lt;code>~/.ansys/ansyscl.localhost.*.log&lt;/code>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 INFO ANSYSLI_CMD=/usr/ansys_inc/v221/licensingclient/linx64/ansyscl -acl 19510.29709 -nodaemon -log ~/.ansys/ansyscl.localhost.19510.29709.log
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 INFO ANSYSLI_INITIALIZATION_FILE=&amp;#39;/usr/ansys_inc/shared_files/licensing/ansyslmd.ini&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 INFO ANSYSLI_PRODORD_FILE=&amp;#39;/usr/ansys_inc/shared_files/licensing/prodord/ansysli.prodord.xml&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 INFO ANSYSLI_TIMEOUT_FLEXLM=15
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 ERROR /usr/ansys_inc/shared_files/licensing/ansyslmd.ini is invalid.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Could not read option file /usr/ansys_inc/shared_files/licensing/ansyslmd.ini.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 ERROR Exiting.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>发现Ansys的许可证管理器无法正确读取配置文件，排除&lt;code>shared_files&lt;/code>下的文件不存在等弱智原因后，可能和文件夹的权限有关系：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 查看文件权限信息&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ls -lht /usr/ansys_inc/shared_files/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>输出如下，文件的所有权为root，是导致许可证无法读取的原因：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">drwxr-xr-x. 9 root root 159 May 12 2023 licensing
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x. 3 root root 20 Nov 13 2021 bin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x. 9 root root 112 Nov 13 2021 lib
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x. 3 root root 20 Nov 13 2021 syslib
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>修改文件夹所有权为普通用户，以解决许可证文件访问问题：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 进入root&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">su
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 修改权限&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">chown &lt;span class="nv">$USER&lt;/span> -R /usr/ansys_inc/shared_files
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>打开Fluent或ICEM，查看问题是否已解决。&lt;/p>
+&lt;h2 id="2-打开icem报错">2. 打开ICEM报错
+&lt;/h2>&lt;p>终端输入&lt;code>icemcfd&lt;/code>，报错如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">ICEM_ACN&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="s2">&amp;#34;/usr/ansys_inc/v221/icemcfd/linux64_amd&amp;#34;&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">LD_LIBRARY_PATH&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="s2">&amp;#34;/usr/ansys_inc/v221/icemcfd/linux64_amd/lib:/usr/ansys_inc/v221/icemcfd/linux64_amd/bin:/usr/ansys_inc/v221/icemcfd/linux64_amd/dif/iges:/usr/ansys_inc/v221/icemcfd/linux64_amd/../../Framework/bin/Linux64:/usr/ansys_inc/v221/icemcfd/linux64_amd/../../tp/IntelCompiler/2019.3.199/linx64/lib/intel64:/usr/ansys_inc/v221/icemcfd/linux64_amd/../../tp/qt_fw/5.9.6/Linux64/lib:/usr/ansys_inc/v221/icemcfd/linux64_amd/../../tp/hdf5/1_10_5/linx64/lib&amp;#34;&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">args&lt;/span> &lt;span class="o">=&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Window&lt;/span> &lt;span class="n">information&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">depth&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">24&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">class&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">4&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">visual&lt;/span> &lt;span class="n">depth&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">24&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">4&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">can&lt;/span>&lt;span class="s1">&amp;#39;t load font screen14, using variable&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Signal&lt;/span> &lt;span class="mi">11&lt;/span> &lt;span class="n">caught&lt;/span>&lt;span class="o">!&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">segmentation&lt;/span> &lt;span class="n">violation&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">exiting&lt;/span> &lt;span class="n">after&lt;/span> &lt;span class="n">doing&lt;/span> &lt;span class="n">an&lt;/span> &lt;span class="n">emergency&lt;/span> &lt;span class="n">save&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Exiting&lt;/span>&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Exit&lt;/span> &lt;span class="n">from&lt;/span> &lt;span class="n">ICEM&lt;/span> &lt;span class="n">CFD&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>解决方案，&lt;a class="link" href="" >安装对应的字体文件&lt;/a>：&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://thelinuxcluster.com/2020/09/30/fixing-cant-load-screen14-issues-for-ansys-2020-r1/" target="_blank" rel="noopener"
+>CentOS&lt;/a>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">yum install xorg-x11-fonts-*
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.cfd-online.com/Forums/ansys-meshing/89147-error-when-starting-icem-cfd-ubuntu.html" target="_blank" rel="noopener"
+>Ubuntu&lt;/a>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">apt-get install xfonts-75dpi xfonts-100dpi
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;h2 id="3-ubuntu打开fluent报错">3. Ubuntu打开Fluent报错
+&lt;/h2>&lt;p>通常发生在新系统上第一次安装Ansys后，报错如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/bin/fluent: 69: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/bin/fluent: 813: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/bin/fluent: 836: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/bin/fluent: 838: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/fluent22.1.0/bin/fluent -r22.1.0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/fluent22.1.0/bin/fluent: 112: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/fluent22.1.0/bin/fluent: 744: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/fluent22.1.0/bin/fluent: 1108: [[: not found
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Ubuntu默认使用dash，确实一些shell特性，需要将其修改为bash：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 运行下面的命令，并在弹出的窗口中选择No&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo dpkg-reconfigure dash
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="4-ansys-23r1许可证管理器-get-system-hostid-information报错">4. Ansys 23R1许可证管理器 Get System HostID Information报错
+&lt;/h2>&lt;p>提示&lt;code>lmutil&lt;/code>文件不存在，但是实际是有这个文件：&lt;/p>
+&lt;ul>
+&lt;li>CentOS 7.6
+手动运行&lt;code>lmutil&lt;/code>，报错如下：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">/lib64/ld-lsb-x86-64.so.3: bad ELF interpreter: No such file or directory
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;a class="link" href="https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/Lmutil-error-lib64ld-lsb-x86-64-so-3-bad-ELF-interpreter.html" target="_blank" rel="noopener"
+>解决方案&lt;/a>：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">yum install redhat-lsb
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>Ubuntu 22.04
+&lt;a class="link" href="https://www.bilibili.com/read/cv27369082/" target="_blank" rel="noopener"
+>参考&lt;/a>：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo ln -s /lib64/ld-linux-x86-64.so.2 /lib64/ld-lsb-x86-64.so.3
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul></description></item><item><title>CentOS下Miniconda导致VNC无法启动的解决方案</title><link>https://TimoLin.github.io/p/centos%E4%B8%8Bminiconda%E5%AF%BC%E8%87%B4vnc%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</link><pubDate>Wed, 25 Oct 2023 00:00:00 +0000</pubDate><guid>https://TimoLin.github.io/p/centos%E4%B8%8Bminiconda%E5%AF%BC%E8%87%B4vnc%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</guid><description>&lt;img src="https://TimoLin.github.io/p/centos%E4%B8%8Bminiconda%E5%AF%BC%E8%87%B4vnc%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/cover.png" alt="Featured image of post CentOS下Miniconda导致VNC无法启动的解决方案" />&lt;p>参考博文&lt;a class="link" href="https://www.cnblogs.com/kevingrace/p/5821450.html" target="_blank" rel="noopener"
+>CentOS7.2 部署VNC服务记录&lt;/a>。&lt;/p>
+&lt;h2 id="问题描述">问题描述
+&lt;/h2>&lt;p>首先在&lt;code>CentOS-7.9&lt;/code>中安装了&lt;code>tigervnc&lt;/code>，并配置好了&lt;code>vncserver&lt;/code>的自启动服务：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-service" data-lang="service">&lt;span class="line">&lt;span class="cl">&lt;span class="k">[Unit]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">Description&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">Remote desktop service (VNC)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">After&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">syslog.target network.target&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">[Service]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">Type&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">simple&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Clean any existing files in /tmp/.X11-unix environment&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">ExecStartPre&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">/bin/sh -c &amp;#39;/usr/bin/vncserver -kill %i &amp;gt; /dev/null 2&amp;gt;&amp;amp;1 || :&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">ExecStart&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">/usr/sbin/runuser -l userTest -c &amp;#34;/usr/bin/vncserver %i -geometry 1440x900&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">ExecStop&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">/bin/sh -c &amp;#39;/usr/bin/vncserver -kill %i &amp;gt; /dev/null 2&amp;gt;&amp;amp;1 || :&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">[Install]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">WantedBy&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">multi-user.target&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在未安装Miniconda环境之前，是可以正常启动的，包括重启系统后自启动，或者使用&lt;code>systemctl start/restart vncserver@\:1.service&lt;/code>进行手动启动/重启。&lt;/p>
+&lt;p>安装Miniconda后，在普通用户&lt;code>userTest&lt;/code>的&lt;code>.bashrc&lt;/code>中会自动添加如下代码自动激活conda环境：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">__conda_setup&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;$(&amp;#39;/home/nuaa/miniconda3/bin/conda&amp;#39; &amp;#39;shell.bash&amp;#39; &amp;#39;hook&amp;#39; 2&amp;gt; /dev/null)&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="o">$&lt;/span>&lt;span class="err">?&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">eq&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="p">];&lt;/span> &lt;span class="n">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">eval&lt;/span> &lt;span class="s2">&amp;#34;$__conda_setup&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">f&lt;/span> &lt;span class="s2">&amp;#34;/home/nuaa/miniconda3/etc/profile.d/conda.sh&amp;#34;&lt;/span> &lt;span class="p">];&lt;/span> &lt;span class="n">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">.&lt;/span> &lt;span class="s2">&amp;#34;/home/nuaa/miniconda3/etc/profile.d/conda.sh&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">export&lt;/span> &lt;span class="n">PATH&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;/home/nuaa/miniconda3/bin:$PATH&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">unset&lt;/span> &lt;span class="n">__conda_setup&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># &amp;lt;&amp;lt;&amp;lt; conda initialize &amp;lt;&amp;lt;&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>然后，&lt;code>vncserver&lt;/code>服务就无法开机自启动或者使用&lt;code>systemctl&lt;/code>启动了，具体报错如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">imsettings&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">check&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">31898&lt;/span>&lt;span class="p">):&lt;/span> &lt;span class="n">GLib&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">GIO&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">CRITICAL&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">21&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">56&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mf">03.842&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">g_dbus_proxy_call_sync_internal&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">assertion&lt;/span> &lt;span class="s1">&amp;#39;G_IS_DBUS_PROXY (proxy)&amp;#39;&lt;/span> &lt;span class="n">failed&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">GLib&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">GIO&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">Message&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">21&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">56&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mf">03.854&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">Using&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="s1">&amp;#39;memory&amp;#39;&lt;/span> &lt;span class="n">GSettings&lt;/span> &lt;span class="n">backend&lt;/span>&lt;span class="o">.&lt;/span> &lt;span class="n">Your&lt;/span> &lt;span class="n">settings&lt;/span> &lt;span class="n">will&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="n">be&lt;/span> &lt;span class="n">saved&lt;/span> &lt;span class="ow">or&lt;/span> &lt;span class="n">shared&lt;/span> &lt;span class="n">with&lt;/span> &lt;span class="n">other&lt;/span> &lt;span class="n">applications&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">**&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">process&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">31798&lt;/span>&lt;span class="p">):&lt;/span> &lt;span class="n">WARNING&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">21&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">56&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mf">03.861&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">Could&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="n">make&lt;/span> &lt;span class="n">bus&lt;/span> &lt;span class="n">activated&lt;/span> &lt;span class="n">clients&lt;/span> &lt;span class="n">aware&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="n">XDG_CURRENT_DESKTOP&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">GNOME&lt;/span> &lt;span class="n">environment&lt;/span> &lt;span class="n">variable&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Could&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="n">connect&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">Connection&lt;/span> &lt;span class="n">refused&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="原因">原因
+&lt;/h2>&lt;p>Miniconda环境下的&lt;code>dbus-daemon&lt;/code>与CentOS系统中的&lt;code>dubs-daemon&lt;/code>存在冲突：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">$ which dbus-daemon
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">~/miniconda3/bin/dbus-daemon
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="解决方案">解决方案
+&lt;/h2>&lt;p>避免普通用户&lt;code>userTest&lt;/code>下Miniconda环境的自动加载，将自动加载环境的代码修改为下面的bash函数形式，需要使用miniconda环境时，运行&lt;code>miniconda&lt;/code>来激活环境：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">miniconda&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">__conda_setup&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;$(&amp;#39;/home/nuaa/miniconda3/bin/conda&amp;#39; &amp;#39;shell.bash&amp;#39; &amp;#39;hook&amp;#39; 2&amp;gt; /dev/null)&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="o">$&lt;/span>&lt;span class="err">?&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">eq&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="p">];&lt;/span> &lt;span class="n">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">eval&lt;/span> &lt;span class="s2">&amp;#34;$__conda_setup&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">f&lt;/span> &lt;span class="s2">&amp;#34;/home/nuaa/miniconda3/etc/profile.d/conda.sh&amp;#34;&lt;/span> &lt;span class="p">];&lt;/span> &lt;span class="n">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">.&lt;/span> &lt;span class="s2">&amp;#34;/home/nuaa/miniconda3/etc/profile.d/conda.sh&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">export&lt;/span> &lt;span class="n">PATH&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;/home/nuaa/miniconda3/bin:$PATH&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">unset&lt;/span> &lt;span class="n">__conda_setup&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># &amp;lt;&amp;lt;&amp;lt; conda initialize &amp;lt;&amp;lt;&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>重启vncserver服务或者重启系统：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">systemctl stop vncserver@&lt;span class="se">\:&lt;/span>1.service
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">systemctl start vncserver@&lt;span class="se">\:&lt;/span>1.service
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="vnc无法登录的一个解决方法">VNC无法登录的一个解决方法
+&lt;/h2>&lt;p>有时在CentoOS登录界面输入密码无效，多次输入密码错误后卡住，或者无法登录，可能是VNC桌面卡死了。&lt;/p>
+&lt;ul>
+&lt;li>方法1: 重启VNC
+SSH登录到目标机器，重启VNC的系统服务。但该方法会使得VNC桌面中的任务随之杀掉。
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">systemctl stop vncserver@&lt;span class="se">\:&lt;/span>1.service
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">systemctl start vncserver@&lt;span class="se">\:&lt;/span>1.service
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>方法2： loginctl解锁桌面（参考&lt;a class="link" href="https://zhuanlan.zhihu.com/p/507878402" target="_blank" rel="noopener"
+>博文&lt;/a>）
+首先查看当前登录了
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">loginctl list-sessions
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>输出如下：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">SESSION UID USER SEAT
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> c1 1000 YOUR_USER_NAME
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> c2 42 gdm seat0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 20210 1000 YOUR_USER_NAME
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">3 sessions listed.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>解锁VNC登录界面：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 一般VNC的session id可能是数字或者c1，尝试下述命令&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">loginctl unlock-session &lt;span class="m">20210&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">或
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">loginctl unlock-session c1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul></description></item><item><title>我的Linux</title><link>https://TimoLin.github.io/p/%E6%88%91%E7%9A%84linux/</link><pubDate>Sat, 16 Sep 2023 00:00:00 +0000</pubDate><guid>https://TimoLin.github.io/p/%E6%88%91%E7%9A%84linux/</guid><description>&lt;img src="https://TimoLin.github.io/p/%E6%88%91%E7%9A%84linux/linux.jpg" alt="Featured image of post 我的Linux" />&lt;h2 id="更换国内源--更新">更换国内源 &amp;amp; 更新
+&lt;/h2>&lt;p>&lt;a class="link" href="https://mirrors.ustc.edu.cn/help/ubuntu.html" target="_blank" rel="noopener"
+>中科大软件源&lt;/a>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo sed -i &lt;span class="s1">&amp;#39;s/archive.ubuntu.com/mirrors.ustc.edu.cn/g&amp;#39;&lt;/span> /etc/apt/sources.list
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt update
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt dist-upgrade
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="安装软件">安装软件
+&lt;/h2>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 更换为zsh终端&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt install zsh autojump
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt install vim ctags
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt install build-essential
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 代理&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt install proxychains
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="配置">配置
+&lt;/h2>&lt;h3 id="配置zsh-oh-my-zshhttpsohmyzshinstall">配置Zsh: &lt;a class="link" href="https://ohmyz.sh/#install" target="_blank" rel="noopener"
+>oh-my-zsh&lt;/a>
+&lt;/h3>&lt;p>将默认bash更换为zsh:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">chsh -s /bin/zsh
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>安装&lt;code>oh-my-zsh&lt;/code>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sh -c &lt;span class="s2">&amp;#34;&lt;/span>&lt;span class="k">$(&lt;/span>wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -&lt;span class="k">)&lt;/span>&lt;span class="s2">&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="配置代理-proxychains">配置代理: proxychains
+&lt;/h3>&lt;p>&lt;code>Proxychains&lt;/code>可以使任何程序通过代理上网，给终端环境下的命令带来了很多便利。
+修改&lt;code>/etc/proxychains.conf&lt;/code>末尾行：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">socks4 127.0.0.1 &lt;span class="m">9095&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>为（此处假设10808为Clash或V2Ray的代理端口）：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">socks5 127.0.0.1 &lt;span class="m">10808&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>终端命令使用代理：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 普通命令&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">proxychains wget **
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># sudo 命令&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo proxychains apt update
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo proxychains apt distupgrade
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="vim配置">VIM配置
+&lt;/h3>&lt;p>更换最新的Vim发行仓库并更新Vim&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo add-apt-repository ppa:jonathonf/vim
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt update
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt install vim
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="vim-plug插件管理器">VIM-Plug插件管理器
+&lt;/h4>&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">curl -fLo ~/.vim/autoload/plug.vim --create-dirs &lt;span class="se">\
+&lt;/span>&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="se">&lt;/span> https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="cocnvimhttpsgithubcomneoclidecocnvim">&lt;a class="link" href="https://github.com/neoclide/coc.nvim" target="_blank" rel="noopener"
+>coc.nvim&lt;/a>
+&lt;/h4>&lt;p>(1) 安装coc依赖&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># C/C++ lsp &lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo snap install ccls
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt install bear
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Fortran lsp&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">pip3 install fortran-language-server
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>插件安装，在vim命令模式下输入：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">:CocInstall coc-pyright
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>(2) C/C++程序生成 &lt;code>compile_commands.json&lt;/code>&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>对采用&lt;code>cmake&lt;/code>编译的程序，例如 &lt;code>FlameMaster&lt;/code>&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Recompile with `-DCMAKE_EXPORT_COMPILE_COMMANDS=1 option`&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">cmake ../Repository -DCMAKE_BUILD_TYPE&lt;span class="o">=&lt;/span>Release -DCMAKE_EXPORT_COMPILE_COMMANDS&lt;span class="o">=&lt;/span>&lt;span class="m">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">cmake --build . --parallel --target install --config Release
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">cp compile_commands.json ../Repository/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>对直接采用 &lt;code>make&lt;/code> 编译的程序，例如 &lt;code>OpenFOAM&lt;/code>&lt;/p>
+&lt;p>参考 &lt;a class="link" href="https://openfoamwiki.net/index.php/HowTo_Use_OpenFOAM_with_Visual_Studio_Code" target="_blank" rel="noopener"
+>教程&lt;/a>.&lt;/p>
+&lt;p>对较低版本的OpenFOAM，修改 OpenFOAM-2.3.1/wmake/wmake:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;span class="lnt">20
+&lt;/span>&lt;span class="lnt">21
+&lt;/span>&lt;span class="lnt">22
+&lt;/span>&lt;span class="lnt">23
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-diff" data-lang="diff">&lt;span class="line">&lt;span class="cl"> +#------------------------------------------------------------------------------
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> +# check if bear is installed and we are not already running under bear
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> +#------------------------------------------------------------------------------
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> +
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> +if [ -z &amp;#34;${RUNNING_UNDER_BEAR}&amp;#34; ] ; then
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> + if ! bear --version &amp;gt; /dev/null ; then
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> + echo &amp;#34;WARNING: bear is not installed -&amp;gt; There will be no compile_commands.json output.&amp;#34; 1&amp;gt;&amp;amp;2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> + elif printf &amp;#39;%s\n%s\n&amp;#39; &amp;#34;bear 3.0.0&amp;#34; &amp;#34;$(bear --version)&amp;#34; | sort -V -C ; then
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> + #bear version &amp;gt;= 3.0.0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> + export RUNNING_UNDER_BEAR=true
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> + mkdir -p $FOAM_LIBBIN
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> + bear --append --output $FOAM_LIBBIN/../compile_commands.json -- wmake $@
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> + exit $?
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> + elif printf &amp;#39;%s\n%s\n&amp;#39; &amp;#34;bear 2.0.0&amp;#34; &amp;#34;$(bear --version)&amp;#34; | sort -V -C ; then
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> + #bear version &amp;gt;= 2.0.0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> + export RUNNING_UNDER_BEAR=true
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> + mkdir -p $FOAM_LIBBIN
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> + bear --append -o $FOAM_LIBBIN/../compile_commands.json wmake $@
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> + exit $?
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> + else
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> + echo &amp;#34;WARNING: bear version is below 2.0.0 -&amp;gt; There will be no compile_commands.json output.&amp;#34; 1&amp;gt;&amp;amp;2
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> + fi
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> +fi
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在 &lt;code>OpenFOAM-2.3.1/bin/tools&lt;/code> 中添加&lt;a class="link" href="https://develop.openfoam.com/Development/openfoam/-/blob/a50047bbcc9ee270ebddd6e95ea7d0e01f2a525f/bin/tools/vscode-settings" target="_blank" rel="noopener"
+>&lt;code>vscode-settings&lt;/code>&lt;/a>。&lt;/p>
+&lt;p>Generate VSCode setting files:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> &lt;span class="nv">$WM_PROJECT_DIR&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">mkdir .vscode
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./bin/tools/vscode-setting &amp;gt; .vscode/settings.json
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Clean OpenFOAM installation&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">wclean all
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># Re-build&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">./Allwmake
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>创建软链接： &lt;code>VIM&lt;/code>/&lt;code>coc.nvim&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> &lt;span class="nv">$WM_PROJECT_DIR&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ln -s ~/OpenFOAM/OpenFOAM-2.3.1/platforms/linux64GccDPOpt/compile_commands.json ./compile_commands.json
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;p>(4) 附录:&lt;/p>
+&lt;ol>
+&lt;li>&lt;code>coc-settings.json&lt;/code>(位于 &lt;code>~/.vim&lt;/code>下):
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;span class="lnt">15
+&lt;/span>&lt;span class="lnt">16
+&lt;/span>&lt;span class="lnt">17
+&lt;/span>&lt;span class="lnt">18
+&lt;/span>&lt;span class="lnt">19
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-json" data-lang="json">&lt;span class="line">&lt;span class="cl">&lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;languageserver&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;ccls&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;command&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;ccls&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;filetypes&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;c&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;cc&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;cpp&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;c++&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;objc&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;objcpp&amp;#34;&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;rootPatterns&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;.ccls&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;compile_commands.json&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;.git/&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;.root&amp;#34;&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;initializationOptions&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;cache&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;directory&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;.cache/ccls&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;highlight&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>&lt;span class="nt">&amp;#34;lsRanges&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="kc">true&lt;/span> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">},&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;fortran&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">{&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;command&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="s2">&amp;#34;fortls&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;filetypes&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;fortran&amp;#34;&lt;/span>&lt;span class="p">],&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="nt">&amp;#34;rootPatterns&amp;#34;&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="p">[&lt;/span>&lt;span class="s2">&amp;#34;.fortls&amp;#34;&lt;/span>&lt;span class="p">,&lt;/span> &lt;span class="s2">&amp;#34;.git/&amp;#34;&lt;/span>&lt;span class="p">]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol></description></item></channel></rss>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CFD on TimoLin's Blog</title><link>https://TimoLin.github.io/categories/cfd/</link><description>Recent content in CFD on TimoLin's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-Hans</language><lastBuildDate>Wed, 27 Mar 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://TimoLin.github.io/categories/cfd/index.xml" rel="self" type="application/rss+xml"/><item><title>Paraview中垂直放置文本的一种方法</title><link>https://TimoLin.github.io/p/paraview%E4%B8%AD%E5%9E%82%E7%9B%B4%E6%94%BE%E7%BD%AE%E6%96%87%E6%9C%AC%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95/</link><pubDate>Wed, 27 Mar 2024 00:00:00 +0000</pubDate><guid>https://TimoLin.github.io/p/paraview%E4%B8%AD%E5%9E%82%E7%9B%B4%E6%94%BE%E7%BD%AE%E6%96%87%E6%9C%AC%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95/</guid><description>&lt;img src="https://TimoLin.github.io/p/paraview%E4%B8%AD%E5%9E%82%E7%9B%B4%E6%94%BE%E7%BD%AE%E6%96%87%E6%9C%AC%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95/cover.png" alt="Featured image of post Paraview中垂直放置文本的一种方法" />&lt;h2 id="需求">需求
+&lt;/h2>&lt;p>对于二维云图，Paraview中默认&lt;code>Y&lt;/code>轴的标题为横向文字（下图左），并且不支持旋转文字的方向，相关讨论可以在这些帖子中看到。&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://discourse.paraview.org/t/allow-rotation-of-axes-grid-title/9324" target="_blank" rel="noopener"
+>Paraview Allow rotation of axes grid title&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://discourse.paraview.org/t/rotate-the-text-filter/4528" target="_blank" rel="noopener"
+>Paraview Rotate the Text filter&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;p>但是有时为了图片更加美观，我们希望&lt;code>Y&lt;/code>轴的title是垂直放置的，如下图（右）所示。&lt;/p>
+&lt;p>&lt;img src="https://TimoLin.github.io/p/paraview%E4%B8%AD%E5%9E%82%E7%9B%B4%E6%94%BE%E7%BD%AE%E6%96%87%E6%9C%AC%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95/step0.jpg"
+width="898"
+height="746"
+srcset="https://TimoLin.github.io/p/paraview%E4%B8%AD%E5%9E%82%E7%9B%B4%E6%94%BE%E7%BD%AE%E6%96%87%E6%9C%AC%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95/step0_huf76c53663c12b835b02f0f0a15575290_341629_480x0_resize_q75_box.jpg 480w, https://TimoLin.github.io/p/paraview%E4%B8%AD%E5%9E%82%E7%9B%B4%E6%94%BE%E7%BD%AE%E6%96%87%E6%9C%AC%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95/step0_huf76c53663c12b835b02f0f0a15575290_341629_1024x0_resize_q75_box.jpg 1024w"
+loading="lazy"
+alt="示例云图效果"
+class="gallery-image"
+data-flex-grow="120"
+data-flex-basis="288px"
+>&lt;/p>
+&lt;p>这里有个教程：&lt;/p>
+&lt;div class="video-wrapper">
+&lt;iframe loading="lazy"
+src="https://www.youtube.com/embed/ZUt0I9XoW2Y"
+allowfullscreen
+title="YouTube Video"
+>
+&lt;/iframe>
+&lt;/div></description></item><item><title>ICEMCFD 18.0/19.0 start problem in UBUNTU 18.04</title><link>https://TimoLin.github.io/p/icemcfd-18.0/19.0-start-problem-in-ubuntu-18.04/</link><pubDate>Wed, 26 Sep 2018 00:00:00 +0000</pubDate><guid>https://TimoLin.github.io/p/icemcfd-18.0/19.0-start-problem-in-ubuntu-18.04/</guid><description>&lt;p>Check my post in &lt;a class="link" href="https://www.cfd-online.com/Forums/ansys/203041-installation-ansys-19-ubuntu-18-4-a.html#6" target="_blank" rel="noopener"
+>cfd-online&lt;/a>&lt;br>
+At August, I upgraded my UBUNTU 16.04 to 18.04. This version is great.&lt;br>
+However, I met a problem when starting ICEMCFD 18.0 and 19.0.&lt;br>
+I check the start script file of icemcfd at &amp;ldquo;ansys_inc/v191/icemcfd/linux64_amd/bin&amp;rdquo;. There are two solutions:&lt;/p>
+&lt;h2 id="solution-1">Solution 1
+&lt;/h2>&lt;p>If you don&amp;rsquo;t want to change the icemcfd start script, just run the following command:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">icemcfd -log tmp.log
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>-log is a icemcfd argument, tmp.log is the log file generated at your pwd.&lt;/p>
+&lt;h2 id="solution-2">Solution 2
+&lt;/h2>&lt;p>If you use other argument when you start icemcfd, the following solution may be not very good. (I don&amp;rsquo;t use arguments when start icemcfd, so it works well for me)
+First- cd to your icemcfd bin dir:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> /usr/ansys_inc/v191/icemcfd/linux64_amd/bin
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Then: edit the icemcfd shell script by any text editor you want, here we use gvim:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">gvim icemcfd
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>change line 607:
+from
+&lt;code>eval &amp;quot;$ICEM_ACN/bin/med&amp;quot; &amp;quot;$args&amp;quot;&lt;/code>
+to
+&lt;code>&amp;quot;$ICEM_ACN/bin/med&amp;quot; $args&lt;/code> or &lt;code>$ICEM_ACN/bin/med&lt;/code>&lt;/p></description></item></channel></rss>

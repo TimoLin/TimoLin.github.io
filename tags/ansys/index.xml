@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>ANSYS on TimoLin's Blog</title><link>https://TimoLin.github.io/tags/ansys/</link><description>Recent content in ANSYS on TimoLin's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-Hans</language><lastBuildDate>Tue, 09 Jan 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://TimoLin.github.io/tags/ansys/index.xml" rel="self" type="application/rss+xml"/><item><title>Linux下Ansys安装与运行的常见问题</title><link>https://TimoLin.github.io/p/linux%E4%B8%8Bansys%E5%AE%89%E8%A3%85%E4%B8%8E%E8%BF%90%E8%A1%8C%E7%9A%84%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/</link><pubDate>Tue, 09 Jan 2024 00:00:00 +0000</pubDate><guid>https://TimoLin.github.io/p/linux%E4%B8%8Bansys%E5%AE%89%E8%A3%85%E4%B8%8E%E8%BF%90%E8%A1%8C%E7%9A%84%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/</guid><description>&lt;img src="https://TimoLin.github.io/p/linux%E4%B8%8Bansys%E5%AE%89%E8%A3%85%E4%B8%8E%E8%BF%90%E8%A1%8C%E7%9A%84%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/cover.png" alt="Featured image of post Linux下Ansys安装与运行的常见问题" />&lt;h2 id="1-打开fluenticem出现许可证错误">1. 打开Fluent/ICEM出现许可证错误
+&lt;/h2>&lt;ul>
+&lt;li>版本：22R1&lt;/li>
+&lt;li>权限：root安装至&lt;code>/usr/ansys_inc&lt;/code>，普通用户使用&lt;/li>
+&lt;li>系统：CentOS 7&lt;/li>
+&lt;/ul>
+&lt;p>查看对应的日志文件 &lt;code>~/.ansys/ansyscl.localhost.*.log&lt;/code>：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 INFO ANSYSLI_CMD=/usr/ansys_inc/v221/licensingclient/linx64/ansyscl -acl 19510.29709 -nodaemon -log ~/.ansys/ansyscl.localhost.19510.29709.log
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 INFO ANSYSLI_INITIALIZATION_FILE=&amp;#39;/usr/ansys_inc/shared_files/licensing/ansyslmd.ini&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 INFO ANSYSLI_PRODORD_FILE=&amp;#39;/usr/ansys_inc/shared_files/licensing/prodord/ansysli.prodord.xml&amp;#39;
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 INFO ANSYSLI_TIMEOUT_FLEXLM=15
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 ERROR /usr/ansys_inc/shared_files/licensing/ansyslmd.ini is invalid.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> Could not read option file /usr/ansys_inc/shared_files/licensing/ansyslmd.ini.
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">2024/01/08 23:10:12 ERROR Exiting.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>发现Ansys的许可证管理器无法正确读取配置文件，排除&lt;code>shared_files&lt;/code>下的文件不存在等弱智原因后，可能和文件夹的权限有关系：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 查看文件权限信息&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">ls -lht /usr/ansys_inc/shared_files/
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>输出如下，文件的所有权为root，是导致许可证无法读取的原因：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">drwxr-xr-x. 9 root root 159 May 12 2023 licensing
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x. 3 root root 20 Nov 13 2021 bin
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x. 9 root root 112 Nov 13 2021 lib
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">drwxr-xr-x. 3 root root 20 Nov 13 2021 syslib
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>修改文件夹所有权为普通用户，以解决许可证文件访问问题：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 进入root&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">su
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 修改权限&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">chown &lt;span class="nv">$USER&lt;/span> -R /usr/ansys_inc/shared_files
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>打开Fluent或ICEM，查看问题是否已解决。&lt;/p>
+&lt;h2 id="2-打开icem报错">2. 打开ICEM报错
+&lt;/h2>&lt;p>终端输入&lt;code>icemcfd&lt;/code>，报错如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">ICEM_ACN&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="s2">&amp;#34;/usr/ansys_inc/v221/icemcfd/linux64_amd&amp;#34;&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">LD_LIBRARY_PATH&lt;/span> &lt;span class="n">is&lt;/span> &lt;span class="s2">&amp;#34;/usr/ansys_inc/v221/icemcfd/linux64_amd/lib:/usr/ansys_inc/v221/icemcfd/linux64_amd/bin:/usr/ansys_inc/v221/icemcfd/linux64_amd/dif/iges:/usr/ansys_inc/v221/icemcfd/linux64_amd/../../Framework/bin/Linux64:/usr/ansys_inc/v221/icemcfd/linux64_amd/../../tp/IntelCompiler/2019.3.199/linx64/lib/intel64:/usr/ansys_inc/v221/icemcfd/linux64_amd/../../tp/qt_fw/5.9.6/Linux64/lib:/usr/ansys_inc/v221/icemcfd/linux64_amd/../../tp/hdf5/1_10_5/linx64/lib&amp;#34;&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">args&lt;/span> &lt;span class="o">=&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Window&lt;/span> &lt;span class="n">information&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">depth&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">24&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">class&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">4&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">visual&lt;/span> &lt;span class="n">depth&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">24&lt;/span> &lt;span class="k">class&lt;/span> &lt;span class="o">=&lt;/span> &lt;span class="mi">4&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">can&lt;/span>&lt;span class="s1">&amp;#39;t load font screen14, using variable&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Signal&lt;/span> &lt;span class="mi">11&lt;/span> &lt;span class="n">caught&lt;/span>&lt;span class="o">!&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">segmentation&lt;/span> &lt;span class="n">violation&lt;/span> &lt;span class="o">-&lt;/span> &lt;span class="n">exiting&lt;/span> &lt;span class="n">after&lt;/span> &lt;span class="n">doing&lt;/span> &lt;span class="n">an&lt;/span> &lt;span class="n">emergency&lt;/span> &lt;span class="n">save&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Exiting&lt;/span>&lt;span class="o">...&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Exit&lt;/span> &lt;span class="n">from&lt;/span> &lt;span class="n">ICEM&lt;/span> &lt;span class="n">CFD&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>解决方案，&lt;a class="link" href="" >安装对应的字体文件&lt;/a>：&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://thelinuxcluster.com/2020/09/30/fixing-cant-load-screen14-issues-for-ansys-2020-r1/" target="_blank" rel="noopener"
+>CentOS&lt;/a>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">yum install xorg-x11-fonts-*
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.cfd-online.com/Forums/ansys-meshing/89147-error-when-starting-icem-cfd-ubuntu.html" target="_blank" rel="noopener"
+>Ubuntu&lt;/a>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">apt-get install xfonts-75dpi xfonts-100dpi
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul>
+&lt;h2 id="3-ubuntu打开fluent报错">3. Ubuntu打开Fluent报错
+&lt;/h2>&lt;p>通常发生在新系统上第一次安装Ansys后，报错如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;span class="lnt">7
+&lt;/span>&lt;span class="lnt">8
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/bin/fluent: 69: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/bin/fluent: 813: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/bin/fluent: 836: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/bin/fluent: 838: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/fluent22.1.0/bin/fluent -r22.1.0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/fluent22.1.0/bin/fluent: 112: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/fluent22.1.0/bin/fluent: 744: [[: not found
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">/software/ansys_inc/V22R1/v221/fluent/fluent22.1.0/bin/fluent: 1108: [[: not found
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Ubuntu默认使用dash，确实一些shell特性，需要将其修改为bash：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 运行下面的命令，并在弹出的窗口中选择No&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo dpkg-reconfigure dash
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="4-ansys-23r1许可证管理器-get-system-hostid-information报错">4. Ansys 23R1许可证管理器 Get System HostID Information报错
+&lt;/h2>&lt;p>提示&lt;code>lmutil&lt;/code>文件不存在，但是实际是有这个文件：&lt;/p>
+&lt;ul>
+&lt;li>CentOS 7.6
+手动运行&lt;code>lmutil&lt;/code>，报错如下：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">/lib64/ld-lsb-x86-64.so.3: bad ELF interpreter: No such file or directory
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;a class="link" href="https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/Lmutil-error-lib64ld-lsb-x86-64-so-3-bad-ELF-interpreter.html" target="_blank" rel="noopener"
+>解决方案&lt;/a>：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">yum install redhat-lsb
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>Ubuntu 22.04
+&lt;a class="link" href="https://www.bilibili.com/read/cv27369082/" target="_blank" rel="noopener"
+>参考&lt;/a>：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo ln -s /lib64/ld-linux-x86-64.so.2 /lib64/ld-lsb-x86-64.so.3
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul></description></item><item><title>ICEMCFD 18.0/19.0 start problem in UBUNTU 18.04</title><link>https://TimoLin.github.io/p/icemcfd-18.0/19.0-start-problem-in-ubuntu-18.04/</link><pubDate>Wed, 26 Sep 2018 00:00:00 +0000</pubDate><guid>https://TimoLin.github.io/p/icemcfd-18.0/19.0-start-problem-in-ubuntu-18.04/</guid><description>&lt;p>Check my post in &lt;a class="link" href="https://www.cfd-online.com/Forums/ansys/203041-installation-ansys-19-ubuntu-18-4-a.html#6" target="_blank" rel="noopener"
+>cfd-online&lt;/a>&lt;br>
+At August, I upgraded my UBUNTU 16.04 to 18.04. This version is great.&lt;br>
+However, I met a problem when starting ICEMCFD 18.0 and 19.0.&lt;br>
+I check the start script file of icemcfd at &amp;ldquo;ansys_inc/v191/icemcfd/linux64_amd/bin&amp;rdquo;. There are two solutions:&lt;/p>
+&lt;h2 id="solution-1">Solution 1
+&lt;/h2>&lt;p>If you don&amp;rsquo;t want to change the icemcfd start script, just run the following command:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">icemcfd -log tmp.log
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>-log is a icemcfd argument, tmp.log is the log file generated at your pwd.&lt;/p>
+&lt;h2 id="solution-2">Solution 2
+&lt;/h2>&lt;p>If you use other argument when you start icemcfd, the following solution may be not very good. (I don&amp;rsquo;t use arguments when start icemcfd, so it works well for me)
+First- cd to your icemcfd bin dir:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> /usr/ansys_inc/v191/icemcfd/linux64_amd/bin
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Then: edit the icemcfd shell script by any text editor you want, here we use gvim:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-shell" data-lang="shell">&lt;span class="line">&lt;span class="cl">gvim icemcfd
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>change line 607:
+from
+&lt;code>eval &amp;quot;$ICEM_ACN/bin/med&amp;quot; &amp;quot;$args&amp;quot;&lt;/code>
+to
+&lt;code>&amp;quot;$ICEM_ACN/bin/med&amp;quot; $args&lt;/code> or &lt;code>$ICEM_ACN/bin/med&lt;/code>&lt;/p></description></item></channel></rss>

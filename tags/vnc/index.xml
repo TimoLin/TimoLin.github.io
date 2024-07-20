@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>VNC on TimoLin's Blog</title><link>https://TimoLin.github.io/tags/vnc/</link><description>Recent content in VNC on TimoLin's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-Hans</language><lastBuildDate>Wed, 25 Oct 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://TimoLin.github.io/tags/vnc/index.xml" rel="self" type="application/rss+xml"/><item><title>CentOS下Miniconda导致VNC无法启动的解决方案</title><link>https://TimoLin.github.io/p/centos%E4%B8%8Bminiconda%E5%AF%BC%E8%87%B4vnc%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</link><pubDate>Wed, 25 Oct 2023 00:00:00 +0000</pubDate><guid>https://TimoLin.github.io/p/centos%E4%B8%8Bminiconda%E5%AF%BC%E8%87%B4vnc%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</guid><description>&lt;img src="https://TimoLin.github.io/p/centos%E4%B8%8Bminiconda%E5%AF%BC%E8%87%B4vnc%E6%97%A0%E6%B3%95%E5%90%AF%E5%8A%A8%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/cover.png" alt="Featured image of post CentOS下Miniconda导致VNC无法启动的解决方案" />&lt;p>参考博文&lt;a class="link" href="https://www.cnblogs.com/kevingrace/p/5821450.html" target="_blank" rel="noopener"
+>CentOS7.2 部署VNC服务记录&lt;/a>。&lt;/p>
+&lt;h2 id="问题描述">问题描述
+&lt;/h2>&lt;p>首先在&lt;code>CentOS-7.9&lt;/code>中安装了&lt;code>tigervnc&lt;/code>，并配置好了&lt;code>vncserver&lt;/code>的自启动服务：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-service" data-lang="service">&lt;span class="line">&lt;span class="cl">&lt;span class="k">[Unit]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">Description&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">Remote desktop service (VNC)&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">After&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">syslog.target network.target&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">[Service]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">Type&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">simple&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c"># Clean any existing files in /tmp/.X11-unix environment&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">ExecStartPre&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">/bin/sh -c &amp;#39;/usr/bin/vncserver -kill %i &amp;gt; /dev/null 2&amp;gt;&amp;amp;1 || :&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">ExecStart&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">/usr/sbin/runuser -l userTest -c &amp;#34;/usr/bin/vncserver %i -geometry 1440x900&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">ExecStop&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">/bin/sh -c &amp;#39;/usr/bin/vncserver -kill %i &amp;gt; /dev/null 2&amp;gt;&amp;amp;1 || :&amp;#39;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">[Install]&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="na">WantedBy&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s">multi-user.target&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>在未安装Miniconda环境之前，是可以正常启动的，包括重启系统后自启动，或者使用&lt;code>systemctl start/restart vncserver@\:1.service&lt;/code>进行手动启动/重启。&lt;/p>
+&lt;p>安装Miniconda后，在普通用户&lt;code>userTest&lt;/code>的&lt;code>.bashrc&lt;/code>中会自动添加如下代码自动激活conda环境：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">__conda_setup&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;$(&amp;#39;/home/nuaa/miniconda3/bin/conda&amp;#39; &amp;#39;shell.bash&amp;#39; &amp;#39;hook&amp;#39; 2&amp;gt; /dev/null)&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">if&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="o">$&lt;/span>&lt;span class="err">?&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">eq&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="p">];&lt;/span> &lt;span class="n">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">eval&lt;/span> &lt;span class="s2">&amp;#34;$__conda_setup&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="k">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">f&lt;/span> &lt;span class="s2">&amp;#34;/home/nuaa/miniconda3/etc/profile.d/conda.sh&amp;#34;&lt;/span> &lt;span class="p">];&lt;/span> &lt;span class="n">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">.&lt;/span> &lt;span class="s2">&amp;#34;/home/nuaa/miniconda3/etc/profile.d/conda.sh&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">export&lt;/span> &lt;span class="n">PATH&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;/home/nuaa/miniconda3/bin:$PATH&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">unset&lt;/span> &lt;span class="n">__conda_setup&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># &amp;lt;&amp;lt;&amp;lt; conda initialize &amp;lt;&amp;lt;&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>然后，&lt;code>vncserver&lt;/code>服务就无法开机自启动或者使用&lt;code>systemctl&lt;/code>启动了，具体报错如下：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="p">(&lt;/span>&lt;span class="n">imsettings&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">check&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">31898&lt;/span>&lt;span class="p">):&lt;/span> &lt;span class="n">GLib&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">GIO&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">CRITICAL&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">21&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">56&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mf">03.842&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">g_dbus_proxy_call_sync_internal&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">assertion&lt;/span> &lt;span class="s1">&amp;#39;G_IS_DBUS_PROXY (proxy)&amp;#39;&lt;/span> &lt;span class="n">failed&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">GLib&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">GIO&lt;/span>&lt;span class="o">-&lt;/span>&lt;span class="n">Message&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">21&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">56&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mf">03.854&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">Using&lt;/span> &lt;span class="n">the&lt;/span> &lt;span class="s1">&amp;#39;memory&amp;#39;&lt;/span> &lt;span class="n">GSettings&lt;/span> &lt;span class="n">backend&lt;/span>&lt;span class="o">.&lt;/span> &lt;span class="n">Your&lt;/span> &lt;span class="n">settings&lt;/span> &lt;span class="n">will&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="n">be&lt;/span> &lt;span class="n">saved&lt;/span> &lt;span class="ow">or&lt;/span> &lt;span class="n">shared&lt;/span> &lt;span class="n">with&lt;/span> &lt;span class="n">other&lt;/span> &lt;span class="n">applications&lt;/span>&lt;span class="o">.&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="o">**&lt;/span> &lt;span class="p">(&lt;/span>&lt;span class="n">process&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">31798&lt;/span>&lt;span class="p">):&lt;/span> &lt;span class="n">WARNING&lt;/span> &lt;span class="o">**&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="mi">21&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mi">56&lt;/span>&lt;span class="p">:&lt;/span>&lt;span class="mf">03.861&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">Could&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="n">make&lt;/span> &lt;span class="n">bus&lt;/span> &lt;span class="n">activated&lt;/span> &lt;span class="n">clients&lt;/span> &lt;span class="n">aware&lt;/span> &lt;span class="n">of&lt;/span> &lt;span class="n">XDG_CURRENT_DESKTOP&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="n">GNOME&lt;/span> &lt;span class="n">environment&lt;/span> &lt;span class="n">variable&lt;/span>&lt;span class="p">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="n">Could&lt;/span> &lt;span class="ow">not&lt;/span> &lt;span class="n">connect&lt;/span>&lt;span class="p">:&lt;/span> &lt;span class="n">Connection&lt;/span> &lt;span class="n">refused&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="原因">原因
+&lt;/h2>&lt;p>Miniconda环境下的&lt;code>dbus-daemon&lt;/code>与CentOS系统中的&lt;code>dubs-daemon&lt;/code>存在冲突：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">$ which dbus-daemon
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">~/miniconda3/bin/dbus-daemon
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="解决方案">解决方案
+&lt;/h2>&lt;p>避免普通用户&lt;code>userTest&lt;/code>下Miniconda环境的自动加载，将自动加载环境的代码修改为下面的bash函数形式，需要使用miniconda环境时，运行&lt;code>miniconda&lt;/code>来激活环境：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt"> 1
+&lt;/span>&lt;span class="lnt"> 2
+&lt;/span>&lt;span class="lnt"> 3
+&lt;/span>&lt;span class="lnt"> 4
+&lt;/span>&lt;span class="lnt"> 5
+&lt;/span>&lt;span class="lnt"> 6
+&lt;/span>&lt;span class="lnt"> 7
+&lt;/span>&lt;span class="lnt"> 8
+&lt;/span>&lt;span class="lnt"> 9
+&lt;/span>&lt;span class="lnt">10
+&lt;/span>&lt;span class="lnt">11
+&lt;/span>&lt;span class="lnt">12
+&lt;/span>&lt;span class="lnt">13
+&lt;/span>&lt;span class="lnt">14
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-gdscript3" data-lang="gdscript3">&lt;span class="line">&lt;span class="cl">&lt;span class="n">miniconda&lt;/span>&lt;span class="p">(){&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">__conda_setup&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;$(&amp;#39;/home/nuaa/miniconda3/bin/conda&amp;#39; &amp;#39;shell.bash&amp;#39; &amp;#39;hook&amp;#39; 2&amp;gt; /dev/null)&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="o">$&lt;/span>&lt;span class="err">?&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">eq&lt;/span> &lt;span class="mi">0&lt;/span> &lt;span class="p">];&lt;/span> &lt;span class="n">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">eval&lt;/span> &lt;span class="s2">&amp;#34;$__conda_setup&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">if&lt;/span> &lt;span class="p">[&lt;/span> &lt;span class="o">-&lt;/span>&lt;span class="n">f&lt;/span> &lt;span class="s2">&amp;#34;/home/nuaa/miniconda3/etc/profile.d/conda.sh&amp;#34;&lt;/span> &lt;span class="p">];&lt;/span> &lt;span class="n">then&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="o">.&lt;/span> &lt;span class="s2">&amp;#34;/home/nuaa/miniconda3/etc/profile.d/conda.sh&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">else&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="k">export&lt;/span> &lt;span class="n">PATH&lt;/span>&lt;span class="o">=&lt;/span>&lt;span class="s2">&amp;#34;/home/nuaa/miniconda3/bin:$PATH&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">fi&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="n">unset&lt;/span> &lt;span class="n">__conda_setup&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> &lt;span class="c1"># &amp;lt;&amp;lt;&amp;lt; conda initialize &amp;lt;&amp;lt;&amp;lt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">&lt;span class="p">}&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>重启vncserver服务或者重启系统：&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">systemctl stop vncserver@&lt;span class="se">\:&lt;/span>1.service
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">systemctl start vncserver@&lt;span class="se">\:&lt;/span>1.service
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h2 id="vnc无法登录的一个解决方法">VNC无法登录的一个解决方法
+&lt;/h2>&lt;p>有时在CentoOS登录界面输入密码无效，多次输入密码错误后卡住，或者无法登录，可能是VNC桌面卡死了。&lt;/p>
+&lt;ul>
+&lt;li>方法1: 重启VNC
+SSH登录到目标机器，重启VNC的系统服务。但该方法会使得VNC桌面中的任务随之杀掉。
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">systemctl stop vncserver@&lt;span class="se">\:&lt;/span>1.service
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">systemctl start vncserver@&lt;span class="se">\:&lt;/span>1.service
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>方法2： loginctl解锁桌面（参考&lt;a class="link" href="https://zhuanlan.zhihu.com/p/507878402" target="_blank" rel="noopener"
+>博文&lt;/a>）
+首先查看当前登录了
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">loginctl list-sessions
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>输出如下：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;span class="lnt">5
+&lt;/span>&lt;span class="lnt">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-fallback" data-lang="fallback">&lt;span class="line">&lt;span class="cl">SESSION UID USER SEAT
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> c1 1000 YOUR_USER_NAME
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> c2 42 gdm seat0
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl"> 20210 1000 YOUR_USER_NAME
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">3 sessions listed.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>解锁VNC登录界面：
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;span class="lnt">4
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="c1"># 一般VNC的session id可能是数字或者c1，尝试下述命令&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">loginctl unlock-session &lt;span class="m">20210&lt;/span>
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">或
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">loginctl unlock-session c1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ul></description></item></channel></rss>

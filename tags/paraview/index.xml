@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Paraview on TimoLin's Blog</title><link>https://TimoLin.github.io/tags/paraview/</link><description>Recent content in Paraview on TimoLin's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-Hans</language><lastBuildDate>Wed, 27 Mar 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://TimoLin.github.io/tags/paraview/index.xml" rel="self" type="application/rss+xml"/><item><title>Paraview中垂直放置文本的一种方法</title><link>https://TimoLin.github.io/p/paraview%E4%B8%AD%E5%9E%82%E7%9B%B4%E6%94%BE%E7%BD%AE%E6%96%87%E6%9C%AC%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95/</link><pubDate>Wed, 27 Mar 2024 00:00:00 +0000</pubDate><guid>https://TimoLin.github.io/p/paraview%E4%B8%AD%E5%9E%82%E7%9B%B4%E6%94%BE%E7%BD%AE%E6%96%87%E6%9C%AC%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95/</guid><description>&lt;img src="https://TimoLin.github.io/p/paraview%E4%B8%AD%E5%9E%82%E7%9B%B4%E6%94%BE%E7%BD%AE%E6%96%87%E6%9C%AC%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95/cover.png" alt="Featured image of post Paraview中垂直放置文本的一种方法" />&lt;h2 id="需求">需求
+&lt;/h2>&lt;p>对于二维云图，Paraview中默认&lt;code>Y&lt;/code>轴的标题为横向文字（下图左），并且不支持旋转文字的方向，相关讨论可以在这些帖子中看到。&lt;/p>
+&lt;ul>
+&lt;li>&lt;a class="link" href="https://discourse.paraview.org/t/allow-rotation-of-axes-grid-title/9324" target="_blank" rel="noopener"
+>Paraview Allow rotation of axes grid title&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://discourse.paraview.org/t/rotate-the-text-filter/4528" target="_blank" rel="noopener"
+>Paraview Rotate the Text filter&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;p>但是有时为了图片更加美观，我们希望&lt;code>Y&lt;/code>轴的title是垂直放置的，如下图（右）所示。&lt;/p>
+&lt;p>&lt;img src="https://TimoLin.github.io/p/paraview%E4%B8%AD%E5%9E%82%E7%9B%B4%E6%94%BE%E7%BD%AE%E6%96%87%E6%9C%AC%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95/step0.jpg"
+width="898"
+height="746"
+srcset="https://TimoLin.github.io/p/paraview%E4%B8%AD%E5%9E%82%E7%9B%B4%E6%94%BE%E7%BD%AE%E6%96%87%E6%9C%AC%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95/step0_huf76c53663c12b835b02f0f0a15575290_341629_480x0_resize_q75_box.jpg 480w, https://TimoLin.github.io/p/paraview%E4%B8%AD%E5%9E%82%E7%9B%B4%E6%94%BE%E7%BD%AE%E6%96%87%E6%9C%AC%E7%9A%84%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95/step0_huf76c53663c12b835b02f0f0a15575290_341629_1024x0_resize_q75_box.jpg 1024w"
+loading="lazy"
+alt="示例云图效果"
+class="gallery-image"
+data-flex-grow="120"
+data-flex-basis="288px"
+>&lt;/p>
+&lt;p>这里有个教程：&lt;/p>
+&lt;div class="video-wrapper">
+&lt;iframe loading="lazy"
+src="https://www.youtube.com/embed/ZUt0I9XoW2Y"
+allowfullscreen
+title="YouTube Video"
+>
+&lt;/iframe>
+&lt;/div></description></item></channel></rss>

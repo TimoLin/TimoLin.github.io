@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Clipboard on TimoLin's Blog</title><link>https://TimoLin.github.io/tags/clipboard/</link><description>Recent content in Clipboard on TimoLin's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-Hans</language><lastBuildDate>Sat, 16 Mar 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://TimoLin.github.io/tags/clipboard/index.xml" rel="self" type="application/rss+xml"/><item><title>跨平台剪贴板同步方案-CopyQ</title><link>https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/</link><pubDate>Sat, 16 Mar 2024 00:00:00 +0000</pubDate><guid>https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/</guid><description>&lt;img src="https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/cover.png" alt="Featured image of post 跨平台剪贴板同步方案-CopyQ" />&lt;h2 id="需求很简单">需求很简单
+&lt;/h2>&lt;ul>
+&lt;li>跨平台支持（Windows/Linux）&lt;/li>
+&lt;li>剪贴板同步（联网或局域网均可）&lt;/li>
+&lt;li>无需手动推送，复制到剪贴板后自动同步&lt;/li>
+&lt;/ul>
+&lt;p>但是试用了很多剪贴板管理工具，总是有各种各样的问题：&lt;/p>
+&lt;h3 id="1-dittohttpsgithubcomsabrogdenditto">(1) &lt;a class="link" href="https://github.com/sabrogden/Ditto" target="_blank" rel="noopener"
+>Ditto&lt;/a>
+&lt;/h3>&lt;ul>
+&lt;li>缺点： 只支持Windows&lt;/li>
+&lt;/ul>
+&lt;h3 id="2-barrierhttpsgithubcomdebaucheebarrier">(2) &lt;a class="link" href="https://github.com/debauchee/barrier" target="_blank" rel="noopener"
+>Barrier&lt;/a>
+&lt;/h3>&lt;ul>
+&lt;li>优点：日常用作虚拟KVM管理，支持剪贴板同步&lt;/li>
+&lt;li>缺点：同步功能总是会莫名失灵，不支持文件复制，复制图片等较大内容时（几百KB~几兆），会导致KVM十分卡顿&lt;/li>
+&lt;/ul>
+&lt;h3 id="3-kde-connecthttpsgithubcomdebaucheebarrier">(3) &lt;a class="link" href="https://github.com/debauchee/barrier" target="_blank" rel="noopener"
+>Kde-connect&lt;/a>
+&lt;/h3>&lt;ul>
+&lt;li>优点：多平台同步（Windows/Linux/MacOS/ios/Android），支持发送文件&lt;/li>
+&lt;li>缺点：Win10下使用会占用剪贴板，使得 Ctrl-C/V 失灵&lt;/li>
+&lt;/ul>
+&lt;h3 id="4-copyqhttpsgithubcomhlukcopyq">(4) &lt;a class="link" href="https://github.com/hluk/CopyQ" target="_blank" rel="noopener"
+>CopyQ&lt;/a>
+&lt;/h3>&lt;ul>
+&lt;li>优点：很棒，基本能满足我的使用需求&lt;/li>
+&lt;li>缺点：同步功能需要第三方软件（坚果云/Dropbox等）&lt;/li>
+&lt;/ul>
+&lt;h2 id="剪贴板管理工具-copyq">剪贴板管理工具-CopyQ
+&lt;/h2>&lt;p>这里只介绍同步功能的设置方法，其他功能请参考&lt;a class="link" href="https://copyq.readthedocs.io/en/latest/" target="_blank" rel="noopener"
+>官方文档&lt;/a>或网络资料。&lt;/p>
+&lt;h3 id="安装">安装
+&lt;/h3>&lt;ul>
+&lt;li>Ubuntu-22.04
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo add-apt-repository ppa:hluk/copyq
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt update
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo apt install copyq
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>Windows&lt;br>
+下载&lt;a class="link" href="https://github.com/hluk/CopyQ/releases" target="_blank" rel="noopener"
+>安装包CopyQ-&lt;em>.&lt;/em>-setup.exe&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;h3 id="配置同步功能">配置同步功能
+&lt;/h3>&lt;p>同步功能是将剪贴板存储到指定的同步文件夹内， 因此需要使用第三方云盘同步软件，例如坚果云、Dropbox等有跨平台支持的云盘服务。&lt;/p>
+&lt;p>以&lt;code>Dropbox&lt;/code>为例，Ubuntu下Dropbox的同步文件夹位于&lt;code>/home/user/Dropbox&lt;/code>，Windows下位于&lt;code>D:\Dropbox&lt;/code>:&lt;/p>
+&lt;h4 id="ubuntu-2204">Ubuntu-22.04
+&lt;/h4>&lt;p>创建&lt;code>CopyQ&lt;/code>的同步文件夹&lt;code>/home/user/Dropbox/CopyQ&lt;/code>。
+打开CopyQ，查看&lt;code>文件&lt;/code>-&lt;code>首选项&lt;/code>-&lt;code>标签&lt;/code>：&lt;/p>
+&lt;p>&lt;img src="https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-linux-1.png"
+width="830"
+height="447"
+srcset="https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-linux-1_hu19a7986583835529befe0daf1cbd872b_40266_480x0_resize_box_3.png 480w, https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-linux-1_hu19a7986583835529befe0daf1cbd872b_40266_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="tab"
+class="gallery-image"
+data-flex-grow="185"
+data-flex-basis="445px"
+>&lt;/p>
+&lt;p>默认剪贴板存放在&lt;code>&amp;amp;clipboard&lt;/code>标签页下。
+设置&lt;code>文件&lt;/code>-&lt;code>首选项&lt;/code>-&lt;code>条目&lt;/code>-&lt;code>同步&lt;/code>， 标签页设置为上图中的标签&lt;code>&amp;amp;clipboard&lt;/code>，文件夹路径设置为刚刚创建的同步文件夹&lt;code>/home/user/Dropbox/CopyQ&lt;/code>，点击&lt;code>应用&lt;/code>。&lt;/p>
+&lt;p>设置完成。
+&lt;img src="https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-linux-2.png"
+width="1049"
+height="630"
+srcset="https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-linux-2_hu0c4ac9058c92b79ebe1feb4414404028_120309_480x0_resize_box_3.png 480w, https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-linux-2_hu0c4ac9058c92b79ebe1feb4414404028_120309_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="sync"
+class="gallery-image"
+data-flex-grow="166"
+data-flex-basis="399px"
+>&lt;/p>
+&lt;h4 id="windows">Windows
+&lt;/h4>&lt;p>设置方法相同，但是要注意Windows下默认的标签为&lt;code>剪贴板(&amp;amp;C)&lt;/code>：
+&lt;img src="https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-windows-1.png"
+width="678"
+height="524"
+srcset="https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-windows-1_hu2aff7f69b592162d1a9e827af4bd62c7_51571_480x0_resize_box_3.png 480w, https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-windows-1_hu2aff7f69b592162d1a9e827af4bd62c7_51571_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="windows"
+class="gallery-image"
+data-flex-grow="129"
+data-flex-basis="310px"
+>&lt;/p>
+&lt;p>复制任意文字或图片后，可以看到同步文件夹下生成的&lt;code>copyq_&amp;lt;timestamp&amp;gt;.*&lt;/code>文件，经由Dropbox自动同步到Windows端。
+&lt;img src="https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-linux-3.png"
+width="1263"
+height="518"
+srcset="https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-linux-3_hu650dc735a4291909c9de2c92e17add7f_91442_480x0_resize_box_3.png 480w, https://TimoLin.github.io/p/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%89%AA%E8%B4%B4%E6%9D%BF%E5%90%8C%E6%AD%A5%E6%96%B9%E6%A1%88-copyq/copyq-linux-3_hu650dc735a4291909c9de2c92e17add7f_91442_1024x0_resize_box_3.png 1024w"
+loading="lazy"
+alt="sync-clipboard"
+class="gallery-image"
+data-flex-grow="243"
+data-flex-basis="585px"
+>&lt;/p></description></item></channel></rss>
