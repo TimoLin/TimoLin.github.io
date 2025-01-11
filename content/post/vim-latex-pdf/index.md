@@ -76,7 +76,10 @@ let master_tex_file = Tex_GetMainFileName()
 4. `选择自定义文本编辑器` - `Custom Text Editor`
 5. `在命令框中填入下列命令` - `Input the following command`
    ```sh
+   # 对于GVIM编辑器
    gvim --remote +%l %f
+   # 对于VSCode编辑器
+   code --goto %f:%l
    ```
 在浏览模式下，使用快捷键`Shift+鼠标左键`单击想要查看源码的内容，即可跳转到相应的Tex源码文件位置中。
 
